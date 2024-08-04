@@ -26,3 +26,7 @@ POST /api/auth/register: Register a new user.
 - POST /tasks/create: Create a new task.
 - PUT /tasks/update/{id}: Update an existing task.
 - DELETE /tasks/delete/{id}: Delete a task by ID.
+
+You can test my app in Postman 
+![image](https://github.com/user-attachments/assets/8a1d7507-079d-4a73-8487-47b13c185826)
+![image](https://github.com/user-attachments/assets/ee504be6-f255-446d-991f-6266fec64e24)
