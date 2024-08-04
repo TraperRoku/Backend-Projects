@@ -1,36 +1,28 @@
-# Read Me First
-The following was discovered as part of building this project:
-
-* The original package name 'com.To-Do List API.To-Do List API' is invalid and this project uses 'com.To_Do.List.API.To_Do.List.API' instead.
-
+# To-Do List API with Authentication
+This project is a RESTful API for managing a to-do list, built using Spring Boot.
+The application includes user authentication and authorization using Spring Security. 
+# Features
+### User Registration: 
+- Users can register with a username and password.
+### Authentication and Authorization: 
+- The API uses Basic Authentication to secure endpoints. Different roles are supported for different levels of access.
+### Task Managment:
+- Create Tasks
+- Get all Tasks
+- Update Tasks
+- Delete Tasks
+- Change Status Tasks
+### Role-based Access Control:
+- Ensures that only authorized users can perform certain actions.
 # Getting Started
-
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.3.2/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.3.2/maven-plugin/reference/html/#build-image)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/3.3.2/reference/htmlsingle/index.html#web)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/3.3.2/reference/htmlsingle/index.html#data.sql.jpa-and-spring-data)
-* [Spring Security](https://docs.spring.io/spring-boot/docs/3.3.2/reference/htmlsingle/index.html#web.security)
-
-### Guides
-The following guides illustrate how to use some features concretely:
-
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Securing a Web Application](https://spring.io/guides/gs/securing-web/)
-* [Spring Boot and OAuth2](https://spring.io/guides/tutorials/spring-boot-oauth2/)
-* [Authenticating a User with LDAP](https://spring.io/guides/gs/authenticating-ldap/)
-
-### Maven Parent overrides
-
-Due to Maven's design, elements are inherited from the parent POM to the project POM.
-While most of the inheritance is fine, it also inherits unwanted elements like `<license>` and `<developers>` from the parent.
-To prevent this, the project POM contains empty overrides for these elements.
-If you manually switch to a different parent and actually want the inheritance, you need to remove those overrides.
-
+- I use java 22 and Maven 3.3.2
+### Clone :
+- git clone https://github.com/TraperRoku/Backend-Projects.git
+# API Endpoints
+### User Registration
+POST /api/auth/register: Register a new user.
+### Task Management
+- GET /tasks/user/{userId}: Retrieve tasks for a specific user.
+- POST /tasks/create: Create a new task.
+- PUT /tasks/update/{id}: Update an existing task.
+- DELETE /tasks/delete/{id}: Delete a task by ID.
