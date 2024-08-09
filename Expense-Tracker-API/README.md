@@ -1,5 +1,5 @@
 # Expense Tracker API Project
-The Expense Tracker API is a backend application designed to help users manage their expenses efficiently. It provides functionalities for user registration, authentication, and CRUD operations on expenses. This project uses Spring Boot for rapid development, JWT for secure user authentication, and MySQL for persistent data storage. Through this project, I gained valuable experience in building secure RESTful APIs and integrating strong authentication mechanisms.
+The Expense Tracker API is a backend application designed to help users manage their expenses efficiently. It provides functionalities for user registration, authentication, and CRUD operations on expenses. JWT for secure user authentication, and MySQL for persistent data storage. Through this project, I gained valuable experience in building secure RESTful APIs and integrating strong authentication mechanisms.
 
 # Features
 ## User Authentication with JWT: 
@@ -22,4 +22,10 @@ The Expense Tracker API is a backend application designed to help users manage t
 # Setup
 ### Clone 
 - git clone https://github.com/TraperRoku/Backend-Projects.git
+
+![image](https://github.com/user-attachments/assets/86954ba8-7cbd-4dd5-ac38-7bbddf8f41dc)
+# Testing
+- I tested the project using Postman 
+![image](https://github.com/user-attachments/assets/30e8b34f-4384-41c6-944e-7b42d4642e4f)
+
 
