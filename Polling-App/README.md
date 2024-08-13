@@ -1,3 +1,5 @@
+![image](https://github.com/user-attachments/assets/177cbadd-2404-4956-b03c-ed8875f699a3)
+
 # Real-Time Voting Application
 This project is a real-time voting application built using Spring Boot for the backend, WebSocket technologies for real-time communication, and HTML, CSS, and JavaScript for the frontend. It allows users to participate in polls by submitting their votes multiple times and provides immediate updates on voting results to all connected clients. The application dynamically displays the results as votes are cast, allowing users to see the current standings in real-time.
 
