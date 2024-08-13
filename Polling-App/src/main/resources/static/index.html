@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot WebSocket Vote Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<noscript>
+    <h2>Sorry! Your browser doesn't support JavaScript</h2>
+</noscript>
+
+<div id="username-page" class="container">
+    <h2>Enter your username to start voting</h2>
+    <form id="usernameForm" name="usernameForm">
+        <div class="form-group">
+            <input type="text" id="name" placeholder="Username" autocomplete="off" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<div id="vote-page" class="hidden container">
+    <div class="vote-container">
+        <div class="vote-header">
+            <h2>Spring WebSocket Vote</h2>
+        </div>
+        <div class="vote-alert">
+            <h3>Choose your party</h3>
+        </div>
+        <form id="voteForm" name="voteForm">
+            <div class="option">
+                <input type="radio" id="konfederacja" name="party" value="KONFEDERACJA">
+                <label for="konfederacja">Konfederacja</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="lewica" name="party" value="LEWICA">
+                <label for="lewica">Lewica</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="koalicja" name="party" value="KOALICJA_OBYWATELSKA">
+                <label for="koalicja">Koalicja Obywatelska</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="pis" name="party" value="PRAWO_I_SPRAWIEDLIWOSC">
+                <label for="pis">Prawo i Sprawiedliwość</label>
+            </div>
+            <div class="option">
+                <input type="radio" id="trzeciaDroga" name="party" value="TRZECIA_DROGA">
+                <label for="trzeciaDroga">Trzecia Droga</label>
+            </div>
+            <button type="submit" class="primary">Give Vote</button>
+        </form>
+    </div>
+
+    <div id="voteResults" class="hidden">
+        <h3>Voting Results</h3>
+        <ul id="voteArea"></ul>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
