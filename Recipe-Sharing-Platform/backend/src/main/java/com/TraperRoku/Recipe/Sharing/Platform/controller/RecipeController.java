@@ -1,14 +1,19 @@
 package com.TraperRoku.Recipe.Sharing.Platform.controller;
 
+import com.TraperRoku.Recipe.Sharing.Platform.dto.RecipeDto;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.Chef;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.Recipe;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.RecipeImage;
+import com.TraperRoku.Recipe.Sharing.Platform.mapper.RecipeMapper;
 import com.TraperRoku.Recipe.Sharing.Platform.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwt;
+
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +24,17 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
-    @RequestMapping("/api/recipes")
+@RequestMapping("/api/recipes")
     @RequiredArgsConstructor
     @RestController
     public class RecipeController {
@@ -80,8 +91,60 @@ import java.util.List;
         }
 
 
+
+
+    @GetMapping("/uploads/images/{fileName}")
+    public ResponseEntity<Resource> getImage(@PathVariable String fileName) throws MalformedURLException {
+        Path imagePath = Paths.get("uploads/images").resolve(fileName).normalize();
+        Resource resource = new UrlResource(imagePath.toUri());
+
+        if (!resource.exists()) {
+            throw new RuntimeException("File not found: " + fileName);
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG) // lub MediaType.IMAGE_PNG, zależnie od formatu
+                .body(resource);
+    }
+
+
+    @GetMapping("/debug/images/{recipeId}")
+        public ResponseEntity<Map<String, Object>> debugImages(@PathVariable Long recipeId) {
+            Recipe recipe = recipeService.findById(recipeId);
+            if (recipe == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Map<String, Object> debug = new HashMap<>();
+            debug.put("recipeId", recipe.getId());
+            debug.put("imageCount", recipe.getImages().size());
+
+            List<Map<String, Object>> imageDetails = new ArrayList<>();
+            for (RecipeImage image : recipe.getImages()) {
+                Map<String, Object> imageInfo = new HashMap<>();
+                imageInfo.put("fileName", image.getFileName());
+                imageInfo.put("exists", imageService.verifyImageExists(image.getFileName()));
+                imageInfo.put("fullPath", imageService.getFullImagePath(image.getFileName()));
+                imageDetails.add(imageInfo);
+            }
+            debug.put("images", imageDetails);
+
+            return ResponseEntity.ok(debug);
+        }
+
     @GetMapping
-    public ResponseEntity<List<Recipe>> getAllRecipes() {
-        return ResponseEntity.ok(recipeService.getAllRecipes());
+    public List<RecipeDto> getAllRecipes() {
+        return recipeService.findAll().stream()
+                .map(RecipeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
+        Recipe recipe = recipeService.findById(id);
+        if (recipe == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found");
+        }
+        return ResponseEntity.ok(recipe);
     }
 }

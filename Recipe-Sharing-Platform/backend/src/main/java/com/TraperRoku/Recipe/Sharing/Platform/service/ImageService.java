@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -57,7 +58,46 @@ public class ImageService {
         recipeImage.setRecipe(recipe);
 
         return recipeImageRepository.save(recipeImage);
+
+
+/*@Service
+@RequiredArgsConstructor
+public class ImageService {
+    private static final int TARGET_WIDTH = 800;
+    private static final int TARGET_HEIGHT = 600;
+    private final String uploadDir = "uploads/images/";  // Use forward slashes
+    private final RecipeImageRepository recipeImageRepository;
+
+    @PostConstruct
+    public void init() {
+        try {
+            Files.createDirectories(Paths.get(uploadDir));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create upload directory!", e);
+        }
     }
+
+    public RecipeImage saveImage(MultipartFile file, Recipe recipe) throws IOException {
+        // Generate unique filename
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        // Normalize path with forward slashes
+        String normalizedPath = uploadDir + fileName.replace("\\", "/");
+        Path destinationPath = Paths.get(normalizedPath);
+
+        // Save the file
+        Files.copy(file.getInputStream(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Create and save RecipeImage entity
+        RecipeImage recipeImage = new RecipeImage();
+        recipeImage.setFileName(fileName);
+        recipeImage.setContentType(file.getContentType());
+        recipeImage.setPath(normalizedPath);
+        recipeImage.setRecipe(recipe);
+
+        return recipeImageRepository.save(recipeImage);*/
+    }
+
 
     private byte[] resizeImage(MultipartFile file) throws IOException {
         // Read the original image
@@ -90,4 +130,15 @@ public class ImageService {
         BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
         return new ImageDimensions(bufferedImage.getWidth(), bufferedImage.getHeight());
     }
+
+    public boolean verifyImageExists(String fileName) {
+        Path imagePath = Paths.get(uploadDir + fileName);
+        return Files.exists(imagePath);
+    }
+
+    public String getFullImagePath(String fileName) {
+        return Paths.get(uploadDir + fileName).toAbsolutePath().toString();
+    }
+
+
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Builder
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class Chef {
@@ -40,5 +40,6 @@ public class Chef {
     public String password;
 
     @OneToMany(mappedBy = "chef", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Recipe> recipes;
 }

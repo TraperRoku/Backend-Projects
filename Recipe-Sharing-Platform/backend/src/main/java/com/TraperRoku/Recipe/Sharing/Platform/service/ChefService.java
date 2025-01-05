@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 public class ChefService {
     private final ChefRepository chefRepository;
-    private final ChefMapper chefMapper;
+   ChefMapper chefMapper = new ChefMapper();
     private final PasswordEncoder passwordEncoder;
 
 

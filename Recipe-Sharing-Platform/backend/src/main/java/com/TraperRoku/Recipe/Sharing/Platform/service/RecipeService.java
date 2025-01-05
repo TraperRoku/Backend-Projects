@@ -5,6 +5,7 @@ import com.TraperRoku.Recipe.Sharing.Platform.repository.RecipeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +17,16 @@ public class RecipeService {
     public Recipe createRecipe(Recipe recipe) {
         return recipeRepository.save(recipe);
     }
-
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
+    public Recipe findById(Long id){
+        return recipeRepository.findById(id).orElseThrow(()-> new RuntimeException("There is not that Recipe"));
     }
 
+    public List<Recipe> getAllRecipes() {
+        return recipeRepository.findAllWithImagesAndChef();
+    }
+    public List<Recipe> findAll() {
+        return recipeRepository.findAll();
+    }
     public Recipe updateRecipe(Long id, Recipe recipe) {
         return recipeRepository.findById(id)
                 .map(existingRecipe -> {
