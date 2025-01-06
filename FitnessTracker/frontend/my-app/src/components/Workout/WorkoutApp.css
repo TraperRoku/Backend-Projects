@@ -1,0 +1,250 @@
+/* WorkoutApp Main Container */
+.workoutDayTime {
+  padding: 40px 0;
+  background-color: #f8fafc69;
+  min-height: 100vh;
+}
+
+/* Main Card Styling */
+.card {
+  background: white;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 16px !important;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+.card-title {
+  color: #1e293b;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  border-bottom: 3px solid #3b82f6;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Navigation Buttons Container */
+.navigation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+/* Navigation and Action Buttons */
+button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+button:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+/* Navigation Button for Week Navigation */
+.week-navigation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  background: #0544aa; /* Tło niebieskie */
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+/* Hover state for Week Navigation button */
+.week-navigation:hover {
+  background: #334155; /* Jaśniejszy ciemny odcień */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Ikony w przyciskach */
+.week-navigation i {
+  font-size: 1.2rem; /* Wielkość ikon */
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Dostosowanie do mniejszych ekranów */
+.navigation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 768px) {
+  .week-navigation {
+    width: 100%; /* Pełna szerokość na małych ekranach */
+    justify-content: space-between;
+  }
+}
+
+.navigation-buttons button:hover {
+  background: #334155;
+}
+
+/* Week View Grid */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Day Cards in Week View */
+.day-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+}
+
+.day-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Form Styling */
+form {
+  background: #f8fafc;
+  padding: 2rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  border: 1px solid #e2e8f0;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none;
+}
+
+/* Exercise List Styling */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+li {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+li:hover {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+}
+
+/* Action Buttons within Lists */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+}
+
+/* Edit Button */
+button.edit-btn {
+  background: #059669;
+}
+
+button.edit-btn:hover {
+  background: #047857;
+}
+
+/* Delete Button */
+button.delete-btn {
+  background: #dc2626;
+}
+
+button.delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .navigation-buttons {
+    flex-direction: column;
+  }
+
+  .navigation-buttons button {
+    width: 100%;
+  }
+
+  form {
+    padding: 1rem;
+  }
+}
+
+/* Status Indicators */
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
