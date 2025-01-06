@@ -2,6 +2,7 @@ import * as React from 'react'
 import WelcomeContent from './WelcomeContent'
 import AuthContent from './RecipeForm'
 import LoginForm from './LoginForm'
+
 import Buttons from './Buttons'
 import RegisterForm from './RegisterForm'
 
@@ -18,6 +19,10 @@ export default class AppContent extends React.Component{
 
     login = () => {
         this.setState({componentToShow: "login"});
+    }
+
+    register = () => {
+        this.setState({componentToShow: "register"})
     }
 
     logout = () => {

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import RecipesList from "./RecipesList";
 import RecipeForm from "./RecipeForm";
+import RegisterForm from './RegisterForm'
 import LoginForm from "./LoginForm";
 import { setAuthHeader, getAuthToken } from "../axios_helper";
 
@@ -32,6 +33,7 @@ const App = () => {
             ) : (
               <>
                 <Link className="btn btn-primary me-2" to="/login">Login</Link>
+                <Link className="btn btn-primary me-2" to="/register">Register</Link>
               </>
             )}
           </div>
@@ -41,6 +43,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<RecipesList />} />
             <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+            <Route path="/register" element={<RegisterForm onRegister={handleLogin} />} />
             <Route path="/add-recipe" element={isLoggedIn ? <RecipeForm /> : <Navigate to="/login" />} />
           </Routes>
         </div>

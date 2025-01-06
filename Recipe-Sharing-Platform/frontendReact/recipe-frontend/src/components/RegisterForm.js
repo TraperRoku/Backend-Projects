@@ -1,99 +1,93 @@
-import * as React from 'react'
-import classNames from 'classnames'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { request } from "../axios_helper";
 
-export default class LoginForm extends React.Component{
-   
-    constructor(props){
-        super(props);
-        this.state = {
-            active: "register",
-            firstName: "",
-            lastName: "",
-            login: "",
-            password: "",
-            onLogin: props.onLogin,
-            onRegister: props.onRegister
-        };
+const RegisterForm = ({ onRegister }) => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    login: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await request("POST", "/register", formData);
+      onRegister(response.data.token); // Pass token to App.js
+      navigate("/"); // Redirect to home after successful registration
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+      console.error(err);
     }
-    onChangeHandler = (event) => {
-        let name = event.target.name;
-        let value = event.target.value;
-        this.setState({[name]: value});
-    }
+  };
 
-    onSubmitLogin = (e) => {
-        this.state.onLogin(e,this.state.login,this.state.password);
-    }
+  return (
+    <form onSubmit={handleSubmit}>
+      <h2>Register</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <div className="mb-3">
+        <input
+          type="text"
+          name="firstName"
+          className="form-control"
+          placeholder="First Name"
+          value={formData.firstName}
+          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <input
+          type="text"
+          name="lastName"
+          className="form-control"
+          placeholder="Last Name"
+          value={formData.lastName}
+          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <input
+          type="email"
+          name="email"
+          className="form-control"
+          placeholder="Email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <input
+          type="text"
+          name="login"
+          className="form-control"
+          placeholder="Username"
+          value={formData.login}
+          onChange={(e) => setFormData({ ...formData, login: e.target.value })}
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <input
+          type="password"
+          name="password"
+          className="form-control"
+          placeholder="Password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          required
+        />
+      </div>
+      <button type="submit" className="btn btn-primary">Register</button>
+    </form>
+  );
+};
 
-    onSubmitRegister = (e) => {
-        this.state.onRegister(e,this.state.firstName, this.state.lastName,
-            this.state.login, this.state.password
-        );
-    }
-
-    render() {
-        return (
-        <div className="row justify-content-center">
-            <div className="col-4">
-            <ul className="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-              <li className="nav-item" role="presentation">
-                <button className={classNames("nav-link", this.state.active === "login" ? "active" : "")} id="tab-login"
-                  onClick={() => this.setState({active: "login"})}>Login</button>
-              </li>
-              <li className="nav-item" role="presentation">
-                <button className={classNames("nav-link", this.state.active === "register" ? "active" : "")} id="tab-register"
-                  onClick={() => this.setState({active: "register"})}>Register</button>
-              </li>
-            </ul>
-
-            <div className="tab-content">
-              <div className={classNames("tab-pane", "fade", this.state.active === "login" ? "show active" : "")} id="pills-login" >
-                <form onSubmit={this.onSubmitLogin}>
-
-                  <div className="form-outline mb-4">
-                    <input type="login" id="loginName" name= "login" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="loginName">Username</label>
-                  </div>
-
-                  <div className="form-outline mb-4">
-                    <input type="password" id="loginPassword" name="password" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="loginPassword">Password</label>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary btn-block mb-4">Sign in</button>
-
-                </form>
-              </div>
-              <div className={classNames("tab-pane", "fade", this.state.active === "register" ? "show active" : "")} id="pills-register" >
-                <form onSubmit={this.onSubmitRegister}>
-
-                  <div className="form-outline mb-4">
-                    <input type="text" id="firstName" name="firstName" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="firstName">First name</label>
-                  </div>
-
-                  <div className="form-outline mb-4">
-                    <input type="text" id="lastName" name="lastName" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="lastName">Last name</label>
-                  </div>
-
-                  <div className="form-outline mb-4">
-                    <input type="text" id="login" name="login" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="login">Username</label>
-                  </div>
-
-                  <div className="form-outline mb-4">
-                    <input type="password" id="registerPassword" name="password" className="form-control" onChange={this.onChangeHandler}/>
-                    <label className="form-label" htmlFor="registerPassword">Password</label>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary btn-block mb-3">Sign in</button>
-                </form>
-              </div>
-            </div>
-            </div>
-        </div>
-        );
-    };
-
-}
+export default RegisterForm;
