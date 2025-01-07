@@ -37,4 +37,7 @@ public class RecipeService {
                 })
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
     }
+    public void deleteRecipe(Long id){
+        recipeRepository.deleteById(id);
+    }
 }

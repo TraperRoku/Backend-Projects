@@ -8,6 +8,7 @@ import com.TraperRoku.Recipe.Sharing.Platform.service.ChefService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,4 +36,5 @@ public class AuthController {
         userDto.setToken(userAuthProvider.createToken(userDto.getLogin()));
         return ResponseEntity.created(URI.create("/users" + userDto.getIdChef())).body(userDto);
     }
+
 }

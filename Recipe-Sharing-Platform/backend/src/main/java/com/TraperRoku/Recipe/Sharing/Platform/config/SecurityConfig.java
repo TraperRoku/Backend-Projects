@@ -34,7 +34,10 @@ public class SecurityConfig {
                 //co oznacza, że aplikacja nie przechowuje sesji użytkownika między żądaniami (wszystko oparte jest na tokenie JWT).
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login","/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/recipes", "/api/recipes/uploads/images/**").permitAll()
+                        //usunac potem
+                        .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").permitAll()
+
                         .anyRequest().authenticated()
                 );
         return http.build();

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { request } from "../axios_helper";
+import "./RecipesList.css";
+import clockIcon from "../icons/clock.png";
+import difficultyIcon from "../icons/difficulty-icon.png";
+import { Link } from "react-router-dom"; // Ensure you have this import for Link
 
 const RecipesList = () => {
   const [recipes, setRecipes] = useState([]);
@@ -10,10 +14,8 @@ const RecipesList = () => {
     const fetchRecipes = async () => {
       try {
         const response = await request("GET", "/api/recipes");
-        console.log("Fetched recipes:", response.data);
         setRecipes(Array.isArray(response.data) ? response.data : [response.data]);
       } catch (error) {
-        console.error("Error fetching recipes:", error);
         setError("Failed to load recipes");
       } finally {
         setLoading(false);
@@ -22,6 +24,12 @@ const RecipesList = () => {
 
     fetchRecipes();
   }, []);
+
+  const getImageUrl = (recipe) => {
+    return recipe.imagePaths?.[0] 
+      ? `http://localhost:8080/api/recipes/${recipe.imagePaths[0]}`
+      : null;
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -33,27 +41,21 @@ const RecipesList = () => {
         {recipes.map((recipe) => (
           <div key={recipe.id} className="col-md-4 mb-4">
             <div className="card h-100">
-              {recipe.images && recipe.images.length > 0 ? (
-                 <>
-                 {recipe.images[1] && console.log(recipe.images[1].fileName)}
+              {recipe.imagePaths?.length ? (
                 <img
-                
-                  src={`http://localhost:8080/api/recipes/uploads/images/${recipe.images[1].fileName}`}
-
+                  src={getImageUrl(recipe)}
                   className="card-img-top"
                   alt={recipe.title}
-                  style={{ height: '200px', objectFit: 'cover' }}
+                  style={{ height: "200px", objectFit: "cover" }}
                   onError={(e) => {
-                    console.error("Image load error:", e);
                     e.target.onerror = null;
-                    e.target.src = 'https://via.placeholder.com/400x300?text=No+Image';
+                    e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
                   }}
                 />
-                </>
               ) : (
-                <div 
+                <div
                   className="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center"
-                  style={{ height: '200px' }}
+                  style={{ height: "200px" }}
                 >
                   No Image Available
                 </div>
@@ -61,9 +63,34 @@ const RecipesList = () => {
               <div className="card-body">
                 <h5 className="card-title">{recipe.title}</h5>
                 <p className="card-text">{recipe.description}</p>
+                <Link to={`/recipes/${recipe.id}`} className="btn btn-primary">
+                  View Details
+                </Link>
+                <div className="card-text custom-flex-right">
+                  <div className="icons">
+                    <div className="icon-item">
+                      <img
+                        src={clockIcon}
+                        alt="Time"
+                        className="icon"
+                        width={24}
+                      />
+                      <span>{recipe.time} minutes</span>
+                    </div>
+                    <div className="icon-item">
+                      <img
+                        src={difficultyIcon}
+                        alt="Difficulty"
+                        className="icon"
+                        width={24}
+                      />
+                      <span>{recipe.difficultyRecipe}</span>
+                    </div>
+                  </div>
+                </div>
                 <p className="card-text">
                   <small className="text-muted">
-                    By {recipe.chef?.chefLogin} 
+                    By {recipe.chefLogin || "Unknown Chef"}
                   </small>
                 </p>
               </div>

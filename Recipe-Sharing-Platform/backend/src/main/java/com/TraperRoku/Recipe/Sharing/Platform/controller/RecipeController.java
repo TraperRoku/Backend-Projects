@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.parser.Entity;
+import org.apache.commons.io.FilenameUtils;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,7 +46,31 @@ import java.util.stream.Collectors;
         private final JwtService jwtService;
         private final ChefService chefService;
 
-        @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   /* private static String imageDirectory = System.getProperty("user.dir") + "/images/";
+
+    @RequestMapping(value = "/image", produces = {MediaType.IMAGE_PNG_VALUE, "application/json"})
+    public ResponseEntity<?> uploadImage(@RequestParam("imageFile")MultipartFile file,
+                                         @RequestParam("imageName") String name) {
+        makeDirectoryIfNotExist(imageDirectory);
+        Path fileNamePath = Paths.get(imageDirectory,
+                name.concat(".").concat(FilenameUtils.getExtension(file.getOriginalFilename())));
+        try {
+            Files.write(fileNamePath, file.getBytes());
+            return new ResponseEntity<>(name, HttpStatus.CREATED);
+        } catch (IOException ex) {
+            return new ResponseEntity<>("Image is not uploaded", HttpStatus.BAD_REQUEST);
+        }
+    }
+*/
+/*    private void makeDirectoryIfNotExist(String imageDirectory) {
+        File directory = new File(imageDirectory);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+    }*/
+
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public ResponseEntity<Recipe> createRecipe(
                 @RequestPart("recipe") String recipeJson,
                 @RequestPart("images") List<MultipartFile> images,
@@ -69,6 +95,10 @@ import java.util.stream.Collectors;
             ObjectMapper mapper = new ObjectMapper();
             Recipe recipe = mapper.readValue(recipeJson, Recipe.class);
             recipe.setChef(chef);
+
+            if (recipe.getSteps() != null) {
+            recipe.getSteps().forEach(step -> step.setRecipe(recipe));
+            }
 
             Recipe savedRecipe = recipeService.createRecipe(recipe);
             List<RecipeImage> recipeImages = new ArrayList<>();
@@ -146,5 +176,16 @@ import java.util.stream.Collectors;
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found");
         }
         return ResponseEntity.ok(recipe);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id){
+
+        Recipe recipe = recipeService.findById(id);
+        if (recipe == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found");
+        }else {
+            recipeService.deleteRecipe(id);
+        }
+        return  ResponseEntity.ok(HttpStatus.OK);
     }
 }

@@ -4,6 +4,7 @@ import RecipesList from "./RecipesList";
 import RecipeForm from "./RecipeForm";
 import RegisterForm from './RegisterForm'
 import LoginForm from "./LoginForm";
+import RecipeDetails from './RecipeDetails';
 import { setAuthHeader, getAuthToken } from "../axios_helper";
 
 const App = () => {
@@ -45,6 +46,7 @@ const App = () => {
             <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="/register" element={<RegisterForm onRegister={handleLogin} />} />
             <Route path="/add-recipe" element={isLoggedIn ? <RecipeForm /> : <Navigate to="/login" />} />
+            <Route path="/recipes/:id" element={<RecipeDetails />} />
           </Routes>
         </div>
       </div>

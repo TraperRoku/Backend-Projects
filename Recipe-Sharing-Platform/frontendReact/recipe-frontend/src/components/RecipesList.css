@@ -1,0 +1,23 @@
+.custom-flex-right {
+    display: flex;
+    justify-content: flex-end; /* Elementy po prawej stronie */
+    align-items: center;
+  }
+  
+  .icons {
+    display: flex;
+    flex-direction: column; /* Ikony jedna nad drugą */
+    gap: 10px; /* Odstęp między ikonami */
+  }
+  
+  .icon-item {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Odstęp między ikoną a tekstem */
+  }
+  
+  .icon-item i {
+    font-size: 16px; /* Rozmiar ikony */
+    color: #555; /* Kolor ikony */
+  }
+  

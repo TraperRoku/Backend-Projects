@@ -20,6 +20,10 @@ public class Recipe {
 
     private String title;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private DifficultyRecipe difficulty;
+
+    private double time;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe", fetch = FetchType.EAGER)
     @JsonManagedReference
@@ -29,7 +33,12 @@ public class Recipe {
     @JoinColumn(name = "chef_id", nullable = false)
     private Chef chef;
 
-    // Remove @Data annotation and explicitly implement toString to prevent infinite recursion
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe", fetch = FetchType.EAGER)
+    @OrderBy("stepNumber ASC")
+    @JsonManagedReference
+    private List<RecipeStep> steps = new ArrayList<>();
+
+
     @Override
     public String toString() {
         return "Recipe{" +
