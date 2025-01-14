@@ -13,6 +13,8 @@ public class RecipeDto {
     private String description;
     private String chefLogin; // Zamiast zwracać cały obiekt Chef
     private List<String> imagePaths; // Lista ścieżek do obrazów
-    private DifficultyRecipe difficultyRecipe;
+    private DifficultyRecipe difficulty;
+
     private double time;
+    private List<String> tags;
 }

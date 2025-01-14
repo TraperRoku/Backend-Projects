@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { Plus, ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
+import { request } from '../axios_helper';
+import { useNavigate } from 'react-router-dom';
 
 const RecipeForm = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     title: "",
+    description: "",
     tags: [],
     difficulty: "medium",
     servings: 1,
@@ -22,6 +26,15 @@ const RecipeForm = () => {
     unit: "gram",
   });
   const [newStep, setNewStep] = useState({ description: "", imageUrl: null });
+
+  const convertDifficultyToEnum = (difficulty) => {
+    const mapping = {
+      'easy': 'EASY',
+      'medium': 'MEDIUM',
+      'hard': 'HARD'
+    };
+    return mapping[difficulty] || 'MEDIUM';
+  };
 
   const handleNextStep = () => {
     if (currentStep === 1 && !formData.title.trim()) {
@@ -65,15 +78,51 @@ const RecipeForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title.trim()) {
       setError("Recipe name cannot be empty!");
       return;
     }
-    console.log("Form submitted:", formData);
+
+    // Create the DTO object matching backend structure
+    const recipeDto = {
+      title: formData.title,
+      description: formData.description,
+      difficultyRecipe: formData.difficulty, // Change this to match the backend's @JsonProperty
+      time: formData.time,
+      tags: formData.tags,
+      steps: formData.steps,
+      images: formData.imagePaths,
+    };
+    
+
+    // Create FormData for multipart submission
+    const data = new FormData();
+    data.append("recipe", new Blob([JSON.stringify(recipeDto)], {
+      type: "application/json"
+    }));
+
+    // Append each image to FormData
+    formData.images.forEach((image, index) => {
+      data.append("images", image);
+    });
+
+    try {
+      await request("POST", "/api/recipes", data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      navigate("/");
+    } catch (error) {
+      console.error("Error adding recipe:", error);
+      setError("Failed to save recipe. Please try again.");
+    }
   };
 
+  // Rest of your component JSX remains the same...
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -105,6 +154,7 @@ const RecipeForm = () => {
           </div>
         )}
 
+        {/* Step 1: General Info */}
         {currentStep === 1 && (
           <div className="space-y-6">
             <div>
@@ -121,6 +171,20 @@ const RecipeForm = () => {
               />
             </div>
 
+            <div className="space-y-6">
+              <label className="block text-xl mb-2">Recipe Description*</label>
+              <input
+                type="text"
+                name="description"
+                className="w-full p-4 text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter recipe description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                required
+              />
+            </div>
+
+            {/* Tags section */}
             <div>
               <label className="block text-xl mb-2">Tags</label>
               <div className="flex gap-4">
@@ -157,6 +221,7 @@ const RecipeForm = () => {
               </div>
             </div>
 
+            {/* Difficulty section */}
             <div>
               <label className="block text-xl mb-2">Difficulty Level</label>
               <div className="flex gap-4">
@@ -182,6 +247,7 @@ const RecipeForm = () => {
               </div>
             </div>
 
+            {/* Time section */}
             <div>
               <label className="block text-xl mb-2">
                 Preparation Time: {formData.time} minutes
@@ -205,6 +271,7 @@ const RecipeForm = () => {
           </div>
         )}
 
+        {/* Step 2: Ingredients */}
         {currentStep === 2 && (
           <div className="space-y-4">
             <div className="flex gap-2">
@@ -276,6 +343,7 @@ const RecipeForm = () => {
           </div>
         )}
 
+        {/* Step 3: Instructions */}
         {currentStep === 3 && (
           <div className="space-y-4">
             <div className="flex gap-2">
@@ -323,6 +391,7 @@ const RecipeForm = () => {
           </div>
         )}
 
+        {/* Step 4: Photos */}
         {currentStep === 4 && (
           <div className="space-y-4">
             <input
@@ -364,6 +433,7 @@ const RecipeForm = () => {
           </div>
         )}
 
+        {/* Navigation buttons */}
         <div className="flex justify-between pt-6">
           {currentStep > 1 && (
             <button
@@ -376,7 +446,7 @@ const RecipeForm = () => {
             </button>
           )}
 
-          {currentStep < 4 ? (
+          {currentStep < 5 ? (
             <button
               type="button"
               onClick={handleNextStep}

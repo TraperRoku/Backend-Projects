@@ -1,6 +1,7 @@
 package com.TraperRoku.Recipe.Sharing.Platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,9 @@ public class Recipe {
 
     private String title;
     private String description;
+
     @Enumerated(EnumType.STRING)
+    @JsonProperty("difficulty")
     private DifficultyRecipe difficulty;
 
     private double time;
@@ -37,6 +40,11 @@ public class Recipe {
     @OrderBy("stepNumber ASC")
     @JsonManagedReference
     private List<RecipeStep> steps = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(name = "recipe_tags" , joinColumns = @JoinColumn(name = "reicpe_id"))
+    @Column(name = "tag")
+    private List<String> tags = new ArrayList<>();
 
 
     @Override

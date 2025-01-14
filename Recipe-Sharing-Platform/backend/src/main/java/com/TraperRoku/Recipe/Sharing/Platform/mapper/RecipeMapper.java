@@ -17,7 +17,7 @@ public class RecipeMapper {
                 .map(RecipeImage::getPath)
                 .collect(Collectors.toList()));
         dto.setTime(recipe.getTime());
-        dto.setDifficultyRecipe(recipe.getDifficulty());
+        dto.setDifficulty(recipe.getDifficulty());
         return dto;
     }
 }
