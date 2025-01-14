@@ -27,7 +27,7 @@ const RecipeDetails = () => {
       
       <div className="row mt-4">
         <div className="col-md-8">
-          <h3>Steps</h3>
+          <h3>Steps</h3>ya
           {recipe.steps?.map((step, index) => (
             <div key={step.id} className="card mb-3">
               <div className="card-body">

@@ -21,3 +21,34 @@
     color: #555; /* Kolor ikony */
   }
   
+  .hover-effect {
+    transition: transform 0.3s ease, filter 0.3s ease; /* Smooth transition */
+  }
+  
+  .hover-effect:hover {
+    transform: scale(1.05); /* Slight zoom */
+    filter: brightness(70%); /* Darkening effect */
+  }
+
+  .hover-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none; /* Usuń standardową linię */
+    color: inherit; /* Zachowaj kolor tekstu */
+  }
+  
+  .hover-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0; /* Linia pod tekstem */
+    left: 0;
+    width: 0;
+    height: 2px; /* Grubość linii */
+    background-color: #007bff; /* Kolor linii (np. niebieski) */
+    transition: width 0.3s ease; /* Animacja pojawiania się */
+  }
+  
+  .hover-link:hover::after {
+    width: 100%; /* Linia rozszerza się na całą szerokość */
+  }
+  

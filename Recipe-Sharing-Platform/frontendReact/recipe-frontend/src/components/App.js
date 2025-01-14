@@ -5,6 +5,7 @@ import RecipeForm from "./RecipeForm";
 import RegisterForm from './RegisterForm'
 import LoginForm from "./LoginForm";
 import RecipeDetails from './RecipeDetails';
+import '../index.css'
 import { setAuthHeader, getAuthToken } from "../axios_helper";
 
 const App = () => {

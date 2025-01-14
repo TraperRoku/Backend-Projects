@@ -14,7 +14,9 @@ const RecipesList = () => {
     const fetchRecipes = async () => {
       try {
         const response = await request("GET", "/api/recipes");
-        setRecipes(Array.isArray(response.data) ? response.data : [response.data]);
+        setRecipes(
+          Array.isArray(response.data) ? response.data : [response.data]
+        );
       } catch (error) {
         setError("Failed to load recipes");
       } finally {
@@ -26,7 +28,7 @@ const RecipesList = () => {
   }, []);
 
   const getImageUrl = (recipe) => {
-    return recipe.imagePaths?.[0] 
+    return recipe.imagePaths?.[0]
       ? `http://localhost:8080/api/recipes/${recipe.imagePaths[0]}`
       : null;
   };
@@ -42,16 +44,19 @@ const RecipesList = () => {
           <div key={recipe.id} className="col-md-4 mb-4">
             <div className="card h-100">
               {recipe.imagePaths?.length ? (
-                <img
-                  src={getImageUrl(recipe)}
-                  className="card-img-top"
-                  alt={recipe.title}
-                  style={{ height: "200px", objectFit: "cover" }}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/400x300?text=No+Image";
-                  }}
-                />
+                <Link to={`/recipes/${recipe.id}`} className="image-link">
+                  <img
+                    src={getImageUrl(recipe)}
+                    className="card-img-top hover-effect"
+                    alt={recipe.title}
+                    style={{ height: "200px", objectFit: "cover" }}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://via.placeholder.com/400x300?text=No+Image";
+                    }}
+                  />
+                </Link>
               ) : (
                 <div
                   className="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center"
@@ -61,11 +66,16 @@ const RecipesList = () => {
                 </div>
               )}
               <div className="card-body">
-                <h5 className="card-title">{recipe.title}</h5>
-                <p className="card-text">{recipe.description}</p>
-                <Link to={`/recipes/${recipe.id}`} className="btn btn-primary">
-                  View Details
+                <Link
+                  to={`/recipes/${recipe.id}`}
+                  className="hover-link"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <h5 className="card-title">{recipe.title}</h5>
                 </Link>
+
+                <p className="card-text">{recipe.description}</p>
+
                 <div className="card-text custom-flex-right">
                   <div className="icons">
                     <div className="icon-item">
