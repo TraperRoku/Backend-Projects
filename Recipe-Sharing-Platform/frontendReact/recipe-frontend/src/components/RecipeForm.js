@@ -17,24 +17,18 @@ const RecipeForm = () => {
     ingredients: [],
     steps: [],
     images: [],
+   
   });
 
   const [newTag, setNewTag] = useState("");
   const [newIngredient, setNewIngredient] = useState({
     name: "",
-    amount: "",
+    amount: 0,
     unit: "gram",
   });
-  const [newStep, setNewStep] = useState({ description: "", imageUrl: null });
 
-  const convertDifficultyToEnum = (difficulty) => {
-    const mapping = {
-      'easy': 'EASY',
-      'medium': 'MEDIUM',
-      'hard': 'HARD'
-    };
-    return mapping[difficulty] || 'MEDIUM';
-  };
+
+  const [newStep, setNewStep] = useState({ description: "", imageUrl: null });
 
   const handleNextStep = () => {
     if (currentStep === 1 && !formData.title.trim()) {
@@ -46,14 +40,25 @@ const RecipeForm = () => {
   };
 
   const handleAddIngredient = () => {
-    if (newIngredient.name.trim() && newIngredient.amount) {
-      setFormData((prev) => ({
-        ...prev,
-        ingredients: [...prev.ingredients, { ...newIngredient }],
-      }));
-      setNewIngredient({ name: "", amount: "", unit: "gram" });
-    }
-  };
+  if (!newIngredient.name || newIngredient.amount <= 0) {
+    alert("Please provide valid ingredient details.");
+    return;
+  }
+
+  setFormData({
+    ...formData,
+    ingredients: [
+      ...formData.ingredients,
+      {
+        name: newIngredient.name,
+        amount: newIngredient.amount,
+        unit: newIngredient.unit,
+      },
+    ],
+  });
+
+  setNewIngredient({ name: "", amount: 0, unit: "gram" });
+};
 
   const handleAddStep = () => {
     if (newStep.description.trim()) {
@@ -89,10 +94,19 @@ const RecipeForm = () => {
     const recipeDto = {
       title: formData.title,
       description: formData.description,
-      difficultyRecipe: formData.difficulty, // Change this to match the backend's @JsonProperty
+      difficulty: formData.difficulty, // Change this to match the backend's @JsonProperty
       time: formData.time,
       tags: formData.tags,
-      steps: formData.steps,
+      steps: formData.steps.map(step => ({
+        description: step.description,
+        stepNumber: step.stepNumber
+      })),
+      ingredients: formData.ingredients.map(({ name, amount, unit }) => ({
+        ingredient: name,
+        howMany: amount,
+        type: unit,
+      })),
+
       images: formData.imagePaths,
     };
     

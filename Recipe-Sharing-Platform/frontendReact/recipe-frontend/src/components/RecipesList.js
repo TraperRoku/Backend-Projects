@@ -94,7 +94,7 @@ const RecipesList = () => {
                         className="icon"
                         width={24}
                       />
-                      <span>{recipe.difficultyRecipe}</span>
+                      <span>{recipe.difficulty}</span>
                     </div>
                   </div>
                 </div>
