@@ -18,6 +18,8 @@ public class RecipeStep {
     private int stepNumber;
     private String description;
 
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "recipe_id")
     @JsonBackReference

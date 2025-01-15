@@ -16,6 +16,7 @@ public class RecipeMapper {
         dto.setTitle(recipe.getTitle());
         dto.setDescription(recipe.getDescription());
         dto.setChefLogin(recipe.getChef().getLogin());
+
         dto.setImagePaths(recipe.getImages().stream()
                 .map(RecipeImage::getPath)
                 .collect(Collectors.toList()));

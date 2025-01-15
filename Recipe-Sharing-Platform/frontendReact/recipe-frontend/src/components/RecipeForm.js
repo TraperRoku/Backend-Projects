@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Plus, ArrowLeft, ArrowRight, Trash2 } from "lucide-react";
-import { request } from '../axios_helper';
-import { useNavigate } from 'react-router-dom';
+import { request } from "../axios_helper";
+import { useNavigate } from "react-router-dom";
 
 const RecipeForm = () => {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ const RecipeForm = () => {
     ingredients: [],
     steps: [],
     images: [],
-   
   });
 
   const [newTag, setNewTag] = useState("");
@@ -27,8 +26,7 @@ const RecipeForm = () => {
     unit: "gram",
   });
 
-
-  const [newStep, setNewStep] = useState({ description: "", imageUrl: null });
+  const [newStep, setNewStep] = useState({ description: "", image: null });
 
   const handleNextStep = () => {
     if (currentStep === 1 && !formData.title.trim()) {
@@ -40,36 +38,83 @@ const RecipeForm = () => {
   };
 
   const handleAddIngredient = () => {
-  if (!newIngredient.name || newIngredient.amount <= 0) {
-    alert("Please provide valid ingredient details.");
-    return;
-  }
+    if (!newIngredient.name || newIngredient.amount <= 0) {
+      alert("Please provide valid ingredient details.");
+      return;
+    }
 
-  setFormData({
-    ...formData,
-    ingredients: [
-      ...formData.ingredients,
-      {
-        name: newIngredient.name,
-        amount: newIngredient.amount,
-        unit: newIngredient.unit,
-      },
-    ],
-  });
+    setFormData({
+      ...formData,
+      ingredients: [
+        ...formData.ingredients,
+        {
+          name: newIngredient.name,
+          amount: newIngredient.amount,
+          unit: newIngredient.unit,
+        },
+      ],
+    });
 
-  setNewIngredient({ name: "", amount: 0, unit: "gram" });
-};
+    setNewIngredient({ name: "", amount: 0, unit: "gram" });
+  };
 
-  const handleAddStep = () => {
+  const handleAddStep = async () => {
     if (newStep.description.trim()) {
-      setFormData((prev) => ({
-        ...prev,
-        steps: [
-          ...prev.steps,
-          { ...newStep, stepNumber: prev.steps.length + 1 },
-        ],
-      }));
-      setNewStep({ description: "", imageUrl: null });
+      try {
+        let imageUrl = null;
+        if (newStep.image) {
+          // First add the step to get the stepId
+          const stepData = {
+            description: newStep.description,
+            stepNumber: formData.steps.length + 1,
+          };
+  
+          // Create FormData for the image upload
+          const imageFormData = new FormData();
+          imageFormData.append("image", newStep.image);
+  
+          // Upload the image
+          const response = await request(
+            "POST",
+            `/api/recipes/steps/${stepData.stepNumber}/upload-image`,
+            imageFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          imageUrl = response.data;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          steps: [
+            ...prev.steps,
+            {
+              description: newStep.description,
+              stepNumber: prev.steps.length + 1,
+              imageUrl: imageUrl,
+              image: newStep.image // Keep the image file for preview
+            },
+          ],
+        }));
+        setNewStep({ description: "", image: null });
+      } catch (error) {
+        console.error("Error uploading step image:", error);
+        // Still add the step even if image upload fails
+        setFormData((prev) => ({
+          ...prev,
+          steps: [
+            ...prev.steps,
+            {
+              description: newStep.description,
+              stepNumber: prev.steps.length + 1,
+            },
+          ],
+        }));
+        setNewStep({ description: "", image: null });
+      }
     }
   };
 
@@ -97,9 +142,9 @@ const RecipeForm = () => {
       difficulty: formData.difficulty, // Change this to match the backend's @JsonProperty
       time: formData.time,
       tags: formData.tags,
-      steps: formData.steps.map(step => ({
+      steps: formData.steps.map((step) => ({
         description: step.description,
-        stepNumber: step.stepNumber
+        stepNumber: step.stepNumber,
       })),
       ingredients: formData.ingredients.map(({ name, amount, unit }) => ({
         ingredient: name,
@@ -109,13 +154,15 @@ const RecipeForm = () => {
 
       images: formData.imagePaths,
     };
-    
 
     // Create FormData for multipart submission
     const data = new FormData();
-    data.append("recipe", new Blob([JSON.stringify(recipeDto)], {
-      type: "application/json"
-    }));
+    data.append(
+      "recipe",
+      new Blob([JSON.stringify(recipeDto)], {
+        type: "application/json",
+      })
+    );
 
     // Append each image to FormData
     formData.images.forEach((image, index) => {
@@ -125,10 +172,10 @@ const RecipeForm = () => {
     try {
       await request("POST", "/api/recipes", data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
-      
+
       navigate("/");
     } catch (error) {
       console.error("Error adding recipe:", error);
@@ -193,7 +240,9 @@ const RecipeForm = () => {
                 className="w-full p-4 text-xl border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter recipe description"
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 required
               />
             </div>
@@ -359,52 +408,101 @@ const RecipeForm = () => {
 
         {/* Step 3: Instructions */}
         {currentStep === 3 && (
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <textarea
-                placeholder="Describe the step..."
-                className="flex-1 p-2 border rounded"
-                value={newStep.description}
-                onChange={(e) =>
-                  setNewStep({ ...newStep, description: e.target.value })
-                }
-              />
-              <button
-                type="button"
-                onClick={handleAddStep}
-                className="p-2 bg-green-600 text-white rounded"
-              >
-                <Plus size={24} />
-              </button>
-            </div>
+  <div className="space-y-4">
+    <div className="space-y-4">
+      <textarea
+        placeholder="Describe the step..."
+        className="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        value={newStep.description}
+        onChange={(e) =>
+          setNewStep({ ...newStep, description: e.target.value })
+        }
+        rows={3}
+      />
+      
+      <div className="flex items-center gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Step Image (optional)
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setNewStep({ ...newStep, image: e.target.files[0] })
+            }
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        
+        <button
+          type="button"
+          onClick={handleAddStep}
+          className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Add Step
+        </button>
+      </div>
 
-            <div className="space-y-2">
-              {formData.steps.map((step, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                >
-                  <span>
-                    Step {step.stepNumber}: {step.description}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData({
-                        ...formData,
-                        steps: formData.steps.filter((_, i) => i !== index),
-                      })
-                    }
-                    className="text-red-500"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              ))}
-            </div>
+      {newStep.image && (
+        <div className="relative w-32 h-32">
+          <img
+            src={URL.createObjectURL(newStep.image)}
+            alt="Step preview"
+            className="w-full h-full object-cover rounded-lg"
+          />
+          <button
+            type="button"
+            onClick={() => setNewStep({ ...newStep, image: null })}
+            className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      )}
+    </div>
+
+    <div className="space-y-4 mt-8">
+      {formData.steps.map((step, index) => (
+        <div
+          key={index}
+          className="flex gap-4 p-4 bg-gray-50 rounded-lg items-start"
+        >
+          <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
+            {step.stepNumber}
           </div>
-        )}
+          
+          <div className="flex-1 space-y-2">
+            <p className="text-lg">{step.description}</p>
+            {step.image && (
+              <div className="relative w-32 h-32">
+                <img
+                  src={step.image ? URL.createObjectURL(step.image) : step.imageUrl}
+                  alt={`Step ${step.stepNumber}`}
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </div>
+            )}
+          </div>
 
+          <button
+            type="button"
+            onClick={() =>
+              setFormData({
+                ...formData,
+                steps: formData.steps.filter((_, i) => i !== index),
+              })
+            }
+            className="text-red-500 hover:text-red-600"
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
         {/* Step 4: Photos */}
         {currentStep === 4 && (
           <div className="space-y-4">

@@ -8,4 +8,6 @@ import lombok.Setter;
 public class RecipeStepDto {
     private int stepNumber;
     private String description;
+
+    private String imageUrl;
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { request } from '../axios_helper';
-import { Clock, Users, ChefHat, Star } from 'lucide-react';
+import { Clock,  ChefHat, Star } from 'lucide-react';
 
 const RecipeDetails = () => {
+  
   const [recipe, setRecipe] = useState(null);
   const { id } = useParams();
 
@@ -28,33 +29,41 @@ const RecipeDetails = () => {
   }
 
   const getImageUrl = (recipe) => {
-    return recipe.imagePaths?.[0]
-      ? `http://localhost:8080/api/recipes/${recipe.imagePaths[0]}`
-      : null;
+    console.log("Recipe data:", recipe);
+    return recipe.images?.[0]  // Changed from imagePaths to images
+      ? `http://localhost:8080/api/recipes/uploads/images/${recipe.images[0].fileName}`
+      : "/api/placeholder/400/300";
   };
+  
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Recipe Title */}
       <h1 className="text-4xl font-bold mb-4">{recipe.title}</h1>
 
-      <img
+      
+          
+                
+                  <img
                     src={getImageUrl(recipe)}
-                  
+                    className="card-img-top hover-effect"
                     alt={recipe.title}
-                    style={{ height: "200px", objectFit: "cover" }}
+                    style={{ height: "400px", objectFit: "cover" }}
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src =
                         "https://via.placeholder.com/400x300?text=No+Image";
                     }}
                   />
+             
+
       
       {/* Recipe Meta Info */}
       <div className="flex flex-wrap gap-6 mb-8 text-gray-600">
         <div className="flex items-center gap-2">
           <ChefHat className="w-5 h-5" />
-          <span>Author: {recipe.chefLogin}</span>
+         
+          <span>Author: {recipe.chef.login}</span>
         </div>
         <div className="flex items-center gap-2">
           <Clock className="w-5 h-5" />
@@ -72,6 +81,7 @@ const RecipeDetails = () => {
         <div className="md:col-span-1">
           <div className="bg-gray-50 p-6 rounded-lg">
             <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
+           
             <ul className="space-y-3">
               {recipe.ingredients?.map((ingredient, index) => (
                 <li key={index} className="flex items-center gap-2">
@@ -101,15 +111,19 @@ const RecipeDetails = () => {
         </div>
 
         {/* Right Column - Instructions and Images */}
-        <div className="md:col-span-2">
+        <div >
+        <h2 className="text-2xl font-bold">Food description</h2>
+        <div className="h-1 bg-blue-300 my-3"></div>
           {/* Recipe Description */}
-          <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm mb-8 md:col-span-2">
+         
             <p className="text-lg text-gray-700">{recipe.description}</p>
           </div>
 
           {/* Steps */}
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Instructions</h2>
+            <h2 className="text-2xl font-bold">Preparation step by step</h2>
+            <div className="h-1 bg-blue-300 my-4"></div>
             {recipe.steps?.map((step, index) => (
               <div key={step.id} className="bg-white p-6 rounded-lg shadow-sm">
                 <div className="flex gap-4">

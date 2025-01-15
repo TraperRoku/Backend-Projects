@@ -46,30 +46,6 @@ import java.util.stream.Collectors;
         private final JwtService jwtService;
         private final ChefService chefService;
 
-   /* private static String imageDirectory = System.getProperty("user.dir") + "/images/";
-
-    @RequestMapping(value = "/image", produces = {MediaType.IMAGE_PNG_VALUE, "application/json"})
-    public ResponseEntity<?> uploadImage(@RequestParam("imageFile")MultipartFile file,
-                                         @RequestParam("imageName") String name) {
-        makeDirectoryIfNotExist(imageDirectory);
-        Path fileNamePath = Paths.get(imageDirectory,
-                name.concat(".").concat(FilenameUtils.getExtension(file.getOriginalFilename())));
-        try {
-            Files.write(fileNamePath, file.getBytes());
-            return new ResponseEntity<>(name, HttpStatus.CREATED);
-        } catch (IOException ex) {
-            return new ResponseEntity<>("Image is not uploaded", HttpStatus.BAD_REQUEST);
-        }
-    }
-*/
-/*    private void makeDirectoryIfNotExist(String imageDirectory) {
-        File directory = new File(imageDirectory);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-    }*/
-
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public ResponseEntity<Recipe> createRecipe(
                 @RequestPart("recipe") String recipeJson,
@@ -131,38 +107,13 @@ import java.util.stream.Collectors;
         Resource resource = new UrlResource(imagePath.toUri());
 
         if (!resource.exists()) {
-            throw new RuntimeException("File not found: " + fileName);
+            throw new RuntimeException("File not zfound: " + fileName);
         }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG) // lub MediaType.IMAGE_PNG, zależnie od formatu
                 .body(resource);
     }
-
-
-    @GetMapping("/debug/images/{recipeId}")
-        public ResponseEntity<Map<String, Object>> debugImages(@PathVariable Long recipeId) {
-            Recipe recipe = recipeService.findById(recipeId);
-            if (recipe == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Map<String, Object> debug = new HashMap<>();
-            debug.put("recipeId", recipe.getId());
-            debug.put("imageCount", recipe.getImages().size());
-
-            List<Map<String, Object>> imageDetails = new ArrayList<>();
-            for (RecipeImage image : recipe.getImages()) {
-                Map<String, Object> imageInfo = new HashMap<>();
-                imageInfo.put("fileName", image.getFileName());
-                imageInfo.put("exists", imageService.verifyImageExists(image.getFileName()));
-                imageInfo.put("fullPath", imageService.getFullImagePath(image.getFileName()));
-                imageDetails.add(imageInfo);
-            }
-            debug.put("images", imageDetails);
-
-            return ResponseEntity.ok(debug);
-        }
 
     @GetMapping
     public List<RecipeDto> getAllRecipes() {
