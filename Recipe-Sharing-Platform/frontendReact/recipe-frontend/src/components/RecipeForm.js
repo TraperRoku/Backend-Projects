@@ -61,59 +61,57 @@ const RecipeForm = () => {
   const handleAddStep = async () => {
     if (newStep.description.trim()) {
       try {
-        let imageUrl = null;
-        if (newStep.image) {
-          // First add the step to get the stepId
-          const stepData = {
-            description: newStep.description,
-            stepNumber: formData.steps.length + 1,
-          };
+        // Create the step data
+        const stepData = {
+          description: newStep.description,
+          stepNumber: formData.steps.length + 1
+        };
   
-          // Create FormData for the image upload
+        let imageUrl = null;
+        let stepId = null;
+  
+        // Only attempt image upload if there is an image
+        if (newStep.image) {
           const imageFormData = new FormData();
           imageFormData.append("image", newStep.image);
-  
-          // Upload the image
-          const response = await request(
-            "POST",
-            `/api/recipes/steps/${stepData.stepNumber}/upload-image`,
-            imageFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          imageUrl = response.data;
+          
+          try {
+            const imageResponse = await request(
+              "POST",
+              `/api/recipes/steps/${stepData.stepNumber}/upload-image`,
+              imageFormData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            imageUrl = imageResponse.data;
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            // Continue even if image upload fails
+          }
         }
-
+  
+        // Update formData with the new step
         setFormData((prev) => ({
           ...prev,
           steps: [
             ...prev.steps,
             {
-              description: newStep.description,
-              stepNumber: prev.steps.length + 1,
+              ...stepData,
+              id: stepId,
               imageUrl: imageUrl,
-              image: newStep.image // Keep the image file for preview
             },
           ],
         }));
+  
+        // Reset the new step form
         setNewStep({ description: "", image: null });
+  
       } catch (error) {
-        console.error("Error uploading step image:", error);
-        // Still add the step even if image upload fails
-        setFormData((prev) => ({
-          ...prev,
-          steps: [
-            ...prev.steps,
-            {
-              description: newStep.description,
-              stepNumber: prev.steps.length + 1,
-            },
-          ],
-        }));
-        setNewStep({ description: "", image: null });
+        console.error("Error adding step:", error);
+        alert("Failed to add step. Please try again.");
       }
     }
   };
@@ -134,27 +132,26 @@ const RecipeForm = () => {
       setError("Recipe name cannot be empty!");
       return;
     }
-
+  
     // Create the DTO object matching backend structure
     const recipeDto = {
       title: formData.title,
       description: formData.description,
-      difficulty: formData.difficulty, // Change this to match the backend's @JsonProperty
+      difficulty: formData.difficulty,
       time: formData.time,
       tags: formData.tags,
-      steps: formData.steps.map((step) => ({
+      steps: formData.steps.map(step => ({
         description: step.description,
         stepNumber: step.stepNumber,
+        imageUrl: step.imageUrl || null, // Include imageUrl only if it exists
       })),
       ingredients: formData.ingredients.map(({ name, amount, unit }) => ({
         ingredient: name,
         howMany: amount,
         type: unit,
       })),
-
-      images: formData.imagePaths,
     };
-
+  
     // Create FormData for multipart submission
     const data = new FormData();
     data.append(
@@ -163,26 +160,25 @@ const RecipeForm = () => {
         type: "application/json",
       })
     );
-
-    // Append each image to FormData
+  
+    // Add recipe images
     formData.images.forEach((image, index) => {
       data.append("images", image);
     });
-
+  
     try {
       await request("POST", "/api/recipes", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+  
       navigate("/");
     } catch (error) {
       console.error("Error adding recipe:", error);
       setError("Failed to save recipe. Please try again.");
     }
   };
-
   // Rest of your component JSX remains the same...
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg">
@@ -502,49 +498,73 @@ const RecipeForm = () => {
       ))}
     </div>
   </div>
-)}
-        {/* Step 4: Photos */}
-        {currentStep === 4 && (
-          <div className="space-y-4">
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  images: Array.from(e.target.files),
-                })
-              }
-              className="w-full p-2 border rounded"
-            />
+)}{/* Step 4: Photos */}
+{currentStep === 4 && (
+  <div className="space-y-6">
+    <div className="flex flex-col gap-4">
+      <label className="block text-xl font-medium text-gray-700">
+        Add Recipe Photos
+      </label>
+      
+      <div className="flex items-center gap-4">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) => {
+            const files = Array.from(e.target.files);
+            setFormData({
+              ...formData,
+              images: [...formData.images, ...files]
+            });
+          }}
+          className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {formData.images.map((image, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src="/api/placeholder/400/300"
-                    alt={`Recipe preview ${index + 1}`}
-                    className="w-full h-48 object-cover rounded"
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFormData({
-                        ...formData,
-                        images: formData.images.filter((_, i) => i !== index),
-                      })
-                    }
-                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full"
-                  >
-                    <Trash2 size={24} />
-                  </button>
-                </div>
-              ))}
+      {/* Image Preview Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+        {formData.images.map((image, index) => (
+          <div key={index} className="relative group">
+            <img
+              src={URL.createObjectURL(image)}
+              alt={`Recipe preview ${index + 1}`}
+              className="w-full h-48 object-cover rounded-lg shadow-sm"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    images: formData.images.filter((_, i) => i !== index)
+                  });
+                }}
+                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+              >
+                <Trash2 size={20} />
+              </button>
             </div>
           </div>
-        )}
+        ))}
+      </div>
 
+      {/* Empty state */}
+      {formData.images.length === 0 && (
+        <div className="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+          <p className="text-gray-500">No photos added yet. Add some photos to showcase your recipe!</p>
+        </div>
+      )}
+
+      {/* Image count indicator */}
+      {formData.images.length > 0 && (
+        <p className="text-sm text-gray-500 mt-2">
+          {formData.images.length} {formData.images.length === 1 ? 'photo' : 'photos'} added
+        </p>
+      )}
+    </div>
+  </div>
+)}
         {/* Navigation buttons */}
         <div className="flex justify-between pt-6">
           {currentStep > 1 && (

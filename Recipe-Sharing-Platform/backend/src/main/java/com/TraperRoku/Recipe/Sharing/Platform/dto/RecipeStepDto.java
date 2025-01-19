@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RecipeStepDto {
+    private Long id;
     private int stepNumber;
     private String description;
 
