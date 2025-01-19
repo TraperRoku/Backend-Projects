@@ -54,6 +54,14 @@ Key entities include Workout, Exercise, and Comment.
 
 - Viewing and managing workout schedules.
 - Adding and editing exercises and comments.
+
+## Frontend Stack:
+- React.js: Main framework for building UI components.
+- Yarn: Dependency and package management for the project.
+- Bootstrap: For responsive and styled UI elements.
+- classnames: Utility for conditionally joining CSS class names dynamically.
+- Axios: For making HTTP requests to interact with the backend API.
+  
 ![image](https://github.com/user-attachments/assets/29f5d338-cddd-4741-b6c0-5961eb51e8c6)
 ![image](https://github.com/user-attachments/assets/5ea67c9f-cb9b-4ecc-8b32-891a1d77fd15)
 ![image](https://github.com/user-attachments/assets/84ad9193-9b22-4164-96a2-753b8e6f1c1e)
