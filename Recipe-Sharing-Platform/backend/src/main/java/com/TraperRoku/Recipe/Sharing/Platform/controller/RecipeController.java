@@ -1,10 +1,12 @@
 package com.TraperRoku.Recipe.Sharing.Platform.controller;
 
+import com.TraperRoku.Recipe.Sharing.Platform.Enum.DifficultyRecipe;
 import com.TraperRoku.Recipe.Sharing.Platform.dto.RecipeDto;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.Chef;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.Recipe;
 import com.TraperRoku.Recipe.Sharing.Platform.entity.RecipeImage;
 import com.TraperRoku.Recipe.Sharing.Platform.mapper.RecipeMapper;
+import com.TraperRoku.Recipe.Sharing.Platform.repository.RecipeRepository;
 import com.TraperRoku.Recipe.Sharing.Platform.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwt;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +32,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +49,7 @@ import java.util.stream.Collectors;
         private final ImageValidator imageValidator;
         private final JwtService jwtService;
         private final ChefService chefService;
+        private final RecipeRepository recipeRepository;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         public ResponseEntity<Recipe> createRecipe(
@@ -71,6 +76,7 @@ import java.util.stream.Collectors;
             ObjectMapper mapper = new ObjectMapper();
             Recipe recipe = mapper.readValue(recipeJson, Recipe.class);
             recipe.setChef(chef);
+            recipe.setPublicationDate(LocalDate.now());
 
             if (recipe.getSteps() != null) {
             recipe.getSteps().forEach(step -> step.setRecipe(recipe));
@@ -122,6 +128,8 @@ import java.util.stream.Collectors;
                 .collect(Collectors.toList());
     }
 
+
+
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
         Recipe recipe = recipeService.findById(id);
@@ -130,6 +138,45 @@ import java.util.stream.Collectors;
         }
         return ResponseEntity.ok(recipe);
     }
+
+    @GetMapping("/find")
+    public ResponseEntity<List<RecipeDto>> findRecipes(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String chef,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) DifficultyRecipe difficulty,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        List<Recipe> recipes = recipeRepository.findRecipes(keyword, chef, tag, difficulty, startDate, endDate);
+        List<RecipeDto> recipeDtos = recipes.stream()
+                .map(RecipeMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(recipeDtos);
+    }
+
+    // Add this method to support search by difficulty
+    @GetMapping("/difficulties")
+    public ResponseEntity<DifficultyRecipe[]> getDifficulties() {
+        return ResponseEntity.ok(DifficultyRecipe.values());
+    }
+
+    // Add this method to get all available tags
+    @GetMapping("/tags")
+    public ResponseEntity<List<String>> getAllTags() {
+        List<String> allTags = recipeService.findAll().stream()
+                .flatMap(recipe -> recipe.getTags().stream())
+                .distinct()
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(allTags);
+    }
+
+    @GetMapping("/chefs")
+    public ResponseEntity<List<String>> getAllChefs() {
+        List<String> chefLogins = chefService.getAllChefs();
+        return ResponseEntity.ok(chefLogins);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id){
 

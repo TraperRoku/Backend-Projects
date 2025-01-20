@@ -52,3 +52,14 @@
     width: 100%; /* Linia rozszerza się na całą szerokość */
   }
   
+  .search-filters {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .tags .badge {
+    font-size: 0.8rem;
+    padding: 0.4em 0.6em;
+  }

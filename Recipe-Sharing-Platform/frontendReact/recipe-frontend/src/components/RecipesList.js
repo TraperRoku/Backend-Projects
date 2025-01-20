@@ -4,12 +4,65 @@ import "./RecipesList.css";
 import clockIcon from "../icons/clock.png";
 import difficultyIcon from "../icons/difficulty-icon.png";
 import { Link } from "react-router-dom"; // Ensure you have this import for Link
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const RecipesList = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [filters, setFilters] = useState({
+    keyword: "",
+    chef: "",
+    tag: "",
+    difficulty: "",
+    startDate: null,
+    endDate: null
+  });
+
+  const difficultyLevels = ["easy", "medium", "hard"];
+
+  const fetchRecipes = async (params = "") => {
+    try {
+      setLoading(true);
+      const response = await request("GET", `/api/recipes/find${params}`);
+      setRecipes(Array.isArray(response.data) ? response.data : [response.data]);
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      setError("Failed to load recipes");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const buildQueryString = () => {
+      const params = new URLSearchParams();
+      
+      if (filters.keyword) params.append("keyword", filters.keyword);
+      if (filters.chef) params.append("chef", filters.chef);
+      if (filters.tag) params.append("tag", filters.tag);
+      if (filters.difficulty) params.append("difficulty", filters.difficulty);
+      if (filters.startDate) params.append("startDate", filters.startDate.toISOString().split('T')[0]);
+      if (filters.endDate) params.append("endDate", filters.endDate.toISOString().split('T')[0]);
+      
+      return params.toString() ? `?${params.toString()}` : "";
+    };
+
+    const timeoutId = setTimeout(() => {
+      fetchRecipes(buildQueryString());
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [filters]);
+
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -39,6 +92,73 @@ const RecipesList = () => {
   return (
     <div className="container">
       <h1>Recipes</h1>
+      
+      <div className="search-filters mb-4">
+        <div className="row g-3">
+          <div className="col-md-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search recipes..."
+              value={filters.keyword}
+              onChange={(e) => handleFilterChange("keyword", e.target.value)}
+            />
+          </div>
+          
+          <div className="col-md-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Chef name"
+              value={filters.chef}
+              onChange={(e) => handleFilterChange("chef", e.target.value)}
+            />
+          </div>
+          
+          <div className="col-md-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Tag"
+              value={filters.tag}
+              onChange={(e) => handleFilterChange("tag", e.target.value)}
+            />
+          </div>
+
+          <div className="col-md-2">
+            <select
+              className="form-select"
+              value={filters.difficulty}
+              onChange={(e) => handleFilterChange("difficulty", e.target.value)}
+            >
+              <option value="">Select Difficulty</option>
+              {difficultyLevels.map(level => (
+                <option key={level} value={level}>{level}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="col-md-3">
+            <div className="d-flex gap-2">
+              <DatePicker
+                selected={filters.startDate}
+                onChange={(date) => handleFilterChange("startDate", date)}
+                placeholderText="Start Date"
+                className="form-control"
+                dateFormat="yyyy-MM-dd"
+              />
+              <DatePicker
+                selected={filters.endDate}
+                onChange={(date) => handleFilterChange("endDate", date)}
+                placeholderText="End Date"
+                className="form-control"
+                dateFormat="yyyy-MM-dd"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="row">
         {recipes.map((recipe) => (
           <div key={recipe.id} className="col-md-4 mb-4">

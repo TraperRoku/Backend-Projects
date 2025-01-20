@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -63,5 +65,10 @@ public class ChefService {
     public Chef findByLoginChef(String login) {
 
         return chefRepository.findByLogin(login).orElseThrow(()->new RuntimeException("there is not chef with that login"));
+    }
+    public List<String> getAllChefs() {
+        return chefRepository.findAll().stream()
+                .map(Chef::getLogin)
+                .collect(Collectors.toList());
     }
 }

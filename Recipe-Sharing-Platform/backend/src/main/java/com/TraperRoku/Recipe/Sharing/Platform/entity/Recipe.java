@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,8 @@ public class Recipe {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<RecipeIngredient> ingredients = new ArrayList<>();
+
+    private LocalDate publicationDate;
 
     @ElementCollection
     @CollectionTable(name = "recipe_tags" , joinColumns = @JoinColumn(name = "reicpe_id"))

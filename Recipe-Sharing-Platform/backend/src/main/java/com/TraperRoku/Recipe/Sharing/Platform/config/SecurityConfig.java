@@ -15,33 +15,34 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
     private final UserAuthProvider userAuthProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.
-                exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(userAuthenticationEntryPoint)
-                )
-                .addFilterBefore(new JwtAuthFilter(userAuthProvider),
-                        BasicAuthenticationFilter.class)
-                .csrf(csrf->
-                        csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //co oznacza, że aplikacja nie przechowuje sesji użytkownika między żądaniami (wszystko oparte jest na tokenie JWT).
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(userAuthenticationEntryPoint))
+                .addFilterBefore(new JwtAuthFilter(userAuthProvider), BasicAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.POST, "/login","/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/recipes", "/api/recipes/uploads/images/**","/api/recipes/**").permitAll()
-                        //usunac potem
+                        .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                        // Allow all recipe-related GET endpoints
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/recipes",
+                                "/api/recipes/uploads/images/**",
+                                "/api/recipes/**",
+                                "/api/recipes/find",
+                                "/api/recipes/find/**",
+                                "/api/recipes/difficulties",
+                                "/api/recipes/tags",
+                                "/api/recipes/chefs"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").permitAll()
-
                         .anyRequest().authenticated()
                 );
         return http.build();
-
-
     }
 }
