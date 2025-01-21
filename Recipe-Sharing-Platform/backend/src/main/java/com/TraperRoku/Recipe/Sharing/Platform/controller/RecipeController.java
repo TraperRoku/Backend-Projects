@@ -115,11 +115,12 @@ import java.util.stream.Collectors;
         if (!resource.exists()) {
             throw new RuntimeException("File not zfound: " + fileName);
         }
-
+        String contentType = determineContentType(fileName);
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG) // lub MediaType.IMAGE_PNG, zależnie od formatu
+                .contentType(MediaType.parseMediaType(contentType))
                 .body(resource);
     }
+
 
     @GetMapping
     public List<RecipeDto> getAllRecipes() {
@@ -187,5 +188,22 @@ import java.util.stream.Collectors;
             recipeService.deleteRecipe(id);
         }
         return  ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    private String determineContentType(String fileName) {
+        String extension = FilenameUtils.getExtension(fileName).toLowerCase();
+        switch (extension) {
+            case "png":
+                return "image/png";
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "gif":
+                return "image/gif";
+            case "webp":
+                return "image/webp";
+            default:
+                return "application/octet-stream";
+        }
     }
 }
