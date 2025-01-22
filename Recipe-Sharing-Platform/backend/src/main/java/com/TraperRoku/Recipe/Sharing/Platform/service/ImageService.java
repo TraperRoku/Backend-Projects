@@ -5,23 +5,23 @@ import com.TraperRoku.Recipe.Sharing.Platform.entity.RecipeImage;
 import com.TraperRoku.Recipe.Sharing.Platform.repository.RecipeImageRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.Image;
-import java.awt.Graphics2D;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -94,43 +94,65 @@ public class ImageService {
     }
 
     private byte[] resizeImage(MultipartFile file) throws IOException {
-        BufferedImage originalImage = null;
-        try {
-            originalImage = ImageIO.read(file.getInputStream());
-            if (originalImage == null) {
-                throw new IOException("Failed to read image file");
-            }
-
-            // Create new BufferedImage with target dimensions
-            BufferedImage outputImage = new BufferedImage(TARGET_WIDTH, TARGET_HEIGHT,
-                    BufferedImage.TYPE_INT_RGB);
-
-            // Use Graphics2D for better quality scaling
-            Graphics2D graphics2D = outputImage.createGraphics();
-            try {
-                graphics2D.drawImage(originalImage.getScaledInstance(
-                        TARGET_WIDTH, TARGET_HEIGHT, Image.SCALE_SMOOTH), 0, 0, null);
-            } finally {
-                graphics2D.dispose();
-            }
-
-            // Convert BufferedImage to byte array
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            String format = getImageFormat(file.getOriginalFilename());
-            ImageIO.write(outputImage, format, baos);
-            return baos.toByteArray();
-        } catch (IOException e) {
-            throw new IOException("Failed to process image: " + e.getMessage(), e);
+        BufferedImage originalImage = ImageIO.read(file.getInputStream());
+        if (originalImage == null) {
+            throw new IOException("Failed to read image file");
         }
-    }
-    /*private byte[] resizeImage(MultipartFile file) throws IOException {
+
+        // Determine if the image has transparency
+        boolean hasAlpha = originalImage.getColorModel().hasAlpha();
+
+        // Create new BufferedImage with appropriate type
+        BufferedImage outputImage = new BufferedImage(
+                TARGET_WIDTH,
+                TARGET_HEIGHT,
+                hasAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB
+        );
+
+        // Use better quality hints
+        Graphics2D graphics2D = outputImage.createGraphics();
+        try {
+            graphics2D.setRenderingHint(
+                    RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BICUBIC
+            );
+            graphics2D.setRenderingHint(
+                    RenderingHints.KEY_RENDERING,
+                    RenderingHints.VALUE_RENDER_QUALITY
+            );
+            graphics2D.setRenderingHint(
+                    RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON
+            );
+
+            graphics2D.drawImage(originalImage, 0, 0, TARGET_WIDTH, TARGET_HEIGHT, null);
+        } finally {
+            graphics2D.dispose();
+        }
+
+        // Convert to byte array while preserving format
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Thumbnails.of(file.getInputStream())
-                .size(TARGET_WIDTH, TARGET_HEIGHT)
-                .outputFormat(getImageFormat(file.getOriginalFilename()))
-                .toOutputStream(baos);
+        String format = getImageFormat(file.getOriginalFilename());
+
+        // For PNG, ensure we use a writer that can handle transparency
+        if (format.equalsIgnoreCase("png")) {
+            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("png");
+            if (writers.hasNext()) {
+                ImageWriter writer = writers.next();
+                ImageWriteParam writeParam = writer.getDefaultWriteParam();
+                ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
+                writer.setOutput(ios);
+                writer.write(null, new IIOImage(outputImage, null, null), writeParam);
+                ios.close();
+                writer.dispose();
+            }
+        } else {
+            ImageIO.write(outputImage, format, baos);
+        }
+
         return baos.toByteArray();
-    }*/
+    }
+
     private String getImageFormat(String fileName) {
         if (fileName == null || !fileName.contains(".")) {
             throw new IllegalArgumentException("Invalid filename");
