@@ -5,6 +5,7 @@ import com.TraperRoku.Recipe.Sharing.Platform.entity.RecipeImage;
 import com.TraperRoku.Recipe.Sharing.Platform.repository.RecipeImageRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -122,7 +123,14 @@ public class ImageService {
             throw new IOException("Failed to process image: " + e.getMessage(), e);
         }
     }
-
+    /*private byte[] resizeImage(MultipartFile file) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Thumbnails.of(file.getInputStream())
+                .size(TARGET_WIDTH, TARGET_HEIGHT)
+                .outputFormat(getImageFormat(file.getOriginalFilename()))
+                .toOutputStream(baos);
+        return baos.toByteArray();
+    }*/
     private String getImageFormat(String fileName) {
         if (fileName == null || !fileName.contains(".")) {
             throw new IllegalArgumentException("Invalid filename");

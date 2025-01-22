@@ -54,7 +54,7 @@ public class ChefService {
         }
 
         Chef chef = chefMapper.toChef(signUpDto);
-        chef.setEmail("email");
+
 
         chef.setPassword(passwordEncoder.encode(new String(signUpDto.getPassword())));
         chefRepository.save(chef);

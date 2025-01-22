@@ -9,7 +9,21 @@ import java.util.List;
 @Component
 public class ImageValidator {
     private static final long MAX_FILE_SIZE = (5 * 1024 * 1024 ) +  (5 * 1024 * 1024) + (5 * 1024 * 1024) ; // 15MB
-    private static final List<String> ALLOWED_FORMATS = Arrays.asList("image/jpeg", "image/png", "image/gif");
+
+    private static final List<String> ALLOWED_MIME_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/webp"
+    );
+
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList(
+            "jpg",
+            "jpeg",
+            "png",
+            "gif",
+            "webp"
+    );
 
     public void validateImage(MultipartFile file) {
         if (file.isEmpty()) {
@@ -20,7 +34,7 @@ public class ImageValidator {
             throw new IllegalArgumentException("File size exceeds maximum limit of 15MB");
         }
 
-        if (!ALLOWED_FORMATS.contains(file.getContentType())) {
+        if (!ALLOWED_MIME_TYPES.contains(file.getContentType())) {
             throw new IllegalArgumentException("Invalid file format. Allowed formats are JPEG, PNG, and GIF");
         }
     }
