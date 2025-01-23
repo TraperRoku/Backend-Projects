@@ -20,6 +20,28 @@
 ![image](https://github.com/user-attachments/assets/6b3fe55c-230d-4ae1-8219-14db16a31452)
 ![image](https://github.com/user-attachments/assets/f309e662-b1c6-453c-8abc-c40b8670f789)
 
+# Entity 
+## chef  
+![image](https://github.com/user-attachments/assets/44b44872-5f91-4df9-b950-7982e2d2e154)
+
+## recipe
+![image](https://github.com/user-attachments/assets/ec8d8535-8898-4b62-8000-96dd6d7f34ae)
+
+## recipe_step
+![image](https://github.com/user-attachments/assets/9ed2987d-bed5-486e-bc66-939dc2178b1e)
+## recipe_tags
+![image](https://github.com/user-attachments/assets/beb1686d-c66a-46d3-92ba-40626b4c6976)
+## recipe_ingredient
+![image](https://github.com/user-attachments/assets/07ba48f5-8888-4482-9c0f-8339e66f33ec)
+## recipe_image
+![image](https://github.com/user-attachments/assets/e2c01150-512d-487b-a6bd-26c6269cb946)
+
+
+
+
+
+
+
 
 
 
