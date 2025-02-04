@@ -1,4 +1,38 @@
 # Recipe Sharing Platfrom
+## 💡 Features
+### Backend Functionalities
+<h3> User Authentication & Authorization</h3>
+
+- Secure login and registration system for chefs using JWT Authentication.
+- Password hashing with Spring Security and BCrypt.
+<h3>  Recipe Management</h3>
+
+- Create, read, update, and delete recipes.
+- Associate each recipe with a registered chef.
+<h3>Image Processing</h3>
+
+- Upload and store multiple images per recipe.
+- Resize images to standard dimensions (800x600 px) using Thumbnailator.
+- Serve images via REST endpoints.
+<h3>Database Schema</h3>
+
+- chef: Stores user information for chefs, including login credentials.
+- recipe: Contains recipe details such as title, description, and associated images.
+- recipe_image : Holds metadata for uploaded recipe images.
+- recipe_step: Stores step-by-step instructions for preparing a recipe, with each step ordered by a sequence number and holds metadata for uploaded steps images.
+
+- recipe_tags: Represents categories or tags for recipes (e.g., "vegan", "quick", "spicy") to help users filter and discover recipes.
+
+- recipe_ingredient: Stores details about ingredients required for a recipe, including ingredient names, quantities, and units (e.g., "2 cups of flour").
+  
+<h3>Filtering & Pagination</h3>
+
+- Search recipes by title, chef, tags, or creation time.
+
+<h3>Security</h3>
+
+- JWT-protected endpoints for creating and managing recipes.
+- Public access for viewing recipes.
 
 
 
