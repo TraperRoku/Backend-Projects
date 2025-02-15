@@ -19,13 +19,17 @@ public class Seat {
 
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id",nullable = false)
-    private MovieSchedule schedule;
+    @JoinColumn(name = "movie_schedule_id",nullable = false)
+    private MovieSchedule movieSchedule;
 
+    @Column(name = "row_num")
     private int rowNumber;
+
+    @Column(name = "seat_num")
     private int seatNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SeatStatus status;
 
 

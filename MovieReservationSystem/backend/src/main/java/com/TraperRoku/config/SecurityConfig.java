@@ -30,9 +30,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
-                        // Allow all recipe-related GET endpoints
-
-                        .requestMatchers(HttpMethod.DELETE, "/api/recipes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/movies").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/movies").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/movies/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         return http.build();

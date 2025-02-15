@@ -23,5 +23,8 @@ public class Movie {
     private String title;
 
     private String genre;
+
     private int duration;
+
+    private String posterUrl;
 }
