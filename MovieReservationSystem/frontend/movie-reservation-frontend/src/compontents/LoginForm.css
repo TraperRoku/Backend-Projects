@@ -1,0 +1,141 @@
+.min-h-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb; /* bg-gray-50 */
+  }
+  
+  .max-w-md {
+    max-width: 28rem; /* max-w-md */
+    width: 100%;
+  }
+  
+  .bg-white {
+    background-color: white;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem; /* rounded-lg */
+  }
+  
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  }
+  
+  .p-8 {
+    padding: 2rem; /* p-8 */
+  }
+  
+  .space-y-8 > * + * {
+    margin-top: 2rem; /* space-y-8 */
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 1.5rem; /* space-y-6 */
+  }
+  
+  .space-y-4 > * + * {
+    margin-top: 1rem; /* space-y-4 */
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-3xl {
+    font-size: 1.875rem; /* text-3xl */
+    line-height: 2.25rem;
+  }
+  
+  .font-bold {
+    font-weight: 700; /* font-bold */
+  }
+  
+  .text-gray-900 {
+    color: #1a202c; /* text-gray-900 */
+  }
+  
+  .text-red-700 {
+    color: #b91c1c; /* text-red-700 */
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2; /* bg-red-100 */
+  }
+  
+  .border-red-400 {
+    border-color: #f87171; /* border-red-400 */
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem; /* rounded-lg */
+  }
+  
+  .appearance-none {
+    appearance: none;
+  }
+  
+  .block {
+    display: block;
+  }
+  
+  .w-full {
+    width: 100%;
+  }
+  
+  .px-4 {
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.75rem; /* py-3 */
+    padding-bottom: 0.75rem;
+  }
+  
+  .border {
+    border-width: 1px;
+  }
+  
+  .border-gray-300 {
+    border-color: #d1d5db; /* border-gray-300 */
+  }
+  
+  .placeholder-gray-500::placeholder {
+    color: #6b7280; /* placeholder-gray-500 */
+  }
+  
+  .focus\:outline-none:focus {
+    outline: none;
+  }
+  
+  .focus\:ring-2:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* focus:ring-2 */
+  }
+  
+  .focus\:ring-blue-500:focus {
+    --tw-ring-color: #3b82f6; /* focus:ring-blue-500 */
+  }
+  
+  .focus\:border-blue-500:focus {
+    border-color: #3b82f6; /* focus:border-blue-500 */
+  }
+  
+  .bg-blue-600 {
+    background-color: #2563eb; /* bg-blue-600 */
+  }
+  
+  .hover\:bg-blue-700:hover {
+    background-color: #1d4ed8; /* hover:bg-blue-700 */
+  }
+  
+  .text-white {
+    color: white;
+  }
+  
+  .transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }

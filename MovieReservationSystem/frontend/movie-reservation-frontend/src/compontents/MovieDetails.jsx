@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { fetchMovieDetails, fetchMovieSchedules } from '../services/api';
 import SeatPicker from './SeatPicker';
 import ReservationForm from './ReservationForm';
+import './Movie.css';
 
 const MovieDetails = () => {
   const { id } = useParams();

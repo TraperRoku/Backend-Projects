@@ -1,0 +1,60 @@
+
+
+header {
+    background-color: #2563eb; /* bg-blue-600 */
+    color: white;
+    padding: 1rem; /* p-4 */
+  }
+  
+  nav {
+    max-width: 1200px; /* container mx-auto */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 1rem; /* space-x-4 */
+  }
+  
+  nav a:hover {
+    color: #bfdbfe; /* hover:text-blue-200 */
+  }
+  
+  nav a,
+  button {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.5rem 1.5rem;
+  }
+  
+  button:hover {
+    color: var(--accent-color);
+    transform: scale(1.1);
+  }
+  
+  button::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent-color);
+    transition: width 0.3s ease;
+  }
+  
+  button:hover::after {
+    width: 100%;
+  }

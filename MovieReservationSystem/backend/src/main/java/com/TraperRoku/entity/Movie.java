@@ -1,13 +1,13 @@
 package com.TraperRoku.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,7 +22,11 @@ public class Movie {
 
     private String title;
 
-    private String genre;
+    @ElementCollection
+    @CollectionTable(name = "movie_genre" , joinColumns = @JoinColumn(name = "movie_id"))
+    @Column(name = "genre")
+    private List<String> genre = new ArrayList<>();
+
 
     private int duration;
 

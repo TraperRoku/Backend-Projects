@@ -1,0 +1,27 @@
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem; /* gap-4 */
+    padding: 1rem; /* p-4 */
+  }
+  
+  .movie-card {
+    border: 1px solid #e5e7eb; /* border-gray-200 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1rem; /* p-4 */
+    text-align: center;
+  }
+  
+  .movie-card img {
+    max-width: 100%;
+    border-radius: 0.5rem; /* rounded-lg */
+  }
+  
+  .movie-card h3 {
+    margin: 0.5rem 0; /* my-2 */
+  }
+  
+  .movie-card p {
+    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; /* text-gray-600 */
+  }

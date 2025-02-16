@@ -1,88 +1,178 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getUserRole } from '../auth';
+import { Plus, X } from 'lucide-react';
+import './AddMovieForm.css';
 
 const AddMovieForm = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        genre: '',
+        genre: [],
         duration: '',
         posterUrl: ''
     });
+
+    const [newGenre, setNewGenre] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const [userRole, setUserRole] = useState(null);
 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        const role = getUserRole();
+        setUserRole(role);
+
+        if (role !== 'ADMIN') {
+            navigate('/');
+        }
+    }, [navigate]);
+
+    const handleAddGenre = (e) => {
         e.preventDefault();
-        try {
-            const token = localStorage.getItem('auth_token');
-            await axios.post('http://localhost:8080/api/movies', formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            navigate('/movies'); // Przekieruj do listy filmów po dodaniu
-        } catch (err) {
-            setError('Failed to add movie');
+        if (newGenre.trim()) {
+            setFormData(prev => ({
+                ...prev,
+                genre: [...prev.genre, newGenre.trim()]
+            }));
+            setNewGenre('');
         }
     };
 
+    const handleRemoveGenre = (indexToRemove) => {
+        setFormData(prev => ({
+            ...prev,
+            genre: prev.genre.filter((_, index) => index !== indexToRemove)
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (formData.genre.length === 0) {
+            setError('Please add at least one genre');
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                setError('Unauthorized: No token found.');
+                return;
+            }
+
+            await axios.post('http://localhost:8080/api/movies', formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            navigate('/movies');
+        } catch (err) {
+            console.error("Error adding movie:", err.response?.data || err.message);
+            setError(err.response?.data?.message || 'Failed to add movie');
+        }
+    };
+
+    if (userRole !== 'ADMIN') {
+        return (
+            <div className="add-movie-form">
+                <p className="error-message">🔒 Access Denied - Admin privileges required</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="p-4">
-            <h2 className="text-2xl font-bold mb-4">Add Movie</h2>
-            {error && <div className="text-red-500 mb-4">{error}</div>}
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block">Title</label>
+        <div className="add-movie-form">
+            <h2>Add New Movie</h2>
+            {error && <div className="error-message">{error}</div>}
+            
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Title</label>
                     <input
                         type="text"
                         value={formData.title}
                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                        className="w-full p-2 border rounded"
+                        placeholder="Enter movie title"
                         required
                     />
                 </div>
-                <div>
-                    <label className="block">Description</label>
+
+                <div className="form-group">
+                    <label>Description</label>
                     <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full p-2 border rounded"
+                        placeholder="Enter movie description"
                         required
                     />
                 </div>
-                <div>
-                    <label className="block">Genre</label>
-                    <input
-                        type="text"
-                        value={formData.genre}
-                        onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
-                        className="w-full p-2 border rounded"
-                        required
-                    />
+
+                <div className="form-group">
+                    <label>Genres</label>
+                    <div className="genre-input-container">
+                        <input
+                            type="text"
+                            value={newGenre}
+                            onChange={(e) => setNewGenre(e.target.value)}
+                            placeholder="Enter a genre"
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleAddGenre(e);
+                                }
+                            }}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddGenre}
+                            className="genre-add-button"
+                        >
+                            <Plus size={20} />
+                        </button>
+                    </div>
+                    <div className="genre-tags">
+                        {formData.genre.map((genre, index) => (
+                            <span key={index} className="genre-tag">
+                                {genre}
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveGenre(index)}
+                                    className="genre-remove-button"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
                 </div>
-                <div>
-                    <label className="block">Duration (minutes)</label>
+
+                <div className="form-group">
+                    <label>Duration (minutes)</label>
                     <input
                         type="number"
                         value={formData.duration}
                         onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                        className="w-full p-2 border rounded"
+                        placeholder="Enter duration in minutes"
+                        min="1"
                         required
                     />
                 </div>
-                <div>
-                    <label className="block">Poster URL</label>
+
+                <div className="form-group">
+                    <label>Poster URL</label>
                     <input
-                        type="text"
+                        type="url"
                         value={formData.posterUrl}
                         onChange={(e) => setFormData({ ...formData, posterUrl: e.target.value })}
-                        className="w-full p-2 border rounded"
+                        placeholder="Enter poster URL"
                         required
                     />
                 </div>
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+
+                <button type="submit">
                     Add Movie
                 </button>
             </form>

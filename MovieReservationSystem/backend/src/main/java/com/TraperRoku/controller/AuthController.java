@@ -27,6 +27,7 @@ public class AuthController {
         UserDto userDto = userService.login(credentialsDto);
 
         userDto.setToken(userAuthProvider.createToken(userDto.getLogin()));
+        System.out.println(userDto.getToken());
         return ResponseEntity.ok(userDto);
     }
 

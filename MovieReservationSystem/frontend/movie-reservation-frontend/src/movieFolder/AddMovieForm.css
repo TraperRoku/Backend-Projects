@@ -1,0 +1,138 @@
+.add-movie-form {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid var(--accent-color);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(229, 9, 20, 0.2);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-movie-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(229, 9, 20, 0.03) 0px,
+        rgba(229, 9, 20, 0.03) 1px,
+        transparent 1px,
+        transparent 10px
+    );
+    pointer-events: none;
+}
+
+.add-movie-form h2 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.add-movie-form label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-family: 'Bebas Neue', cursive;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.add-movie-form input,
+.add-movie-form textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-color);
+    border-radius: 5px;
+    color: var(--text-light);
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.add-movie-form input:focus,
+.add-movie-form textarea:focus {
+    outline: none;
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.add-movie-form input::placeholder,
+.add-movie-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.add-movie-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.add-movie-form button {
+    width: 100%;
+    padding: 1rem;
+    background: var(--accent-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 5px;
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.add-movie-form button:hover {
+    background: #ff1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+}
+
+.add-movie-form button:active {
+    transform: translateY(1px);
+}
+
+.error-message {
+    color: var(--accent-color);
+    background: rgba(229, 9, 20, 0.1);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    font-family: 'Roboto', sans-serif;
+    border-left: 4px solid var(--accent-color);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .add-movie-form {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .add-movie-form h2 {
+        font-size: 2rem;
+    }
+
+    .add-movie-form button {
+        padding: 0.75rem;
+    }
+}

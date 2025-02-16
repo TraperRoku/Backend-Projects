@@ -38,9 +38,12 @@ public class UserAuthProvider {
 
         Date now = new Date();
 
+        UserDto user = userService.findByLogin(login);
+        String role = user.getRole();
 
         return JWT.create()
                 .withIssuer(login)  // Ustawienie loginu użytkownika jako issuer
+                .withClaim(ROLE_CLAIM, role)
                 .withIssuedAt(now)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 dni
                 .sign(algorithm);
@@ -52,9 +55,15 @@ public class UserAuthProvider {
         String login = decodedJWT.getIssuer();
         String role = decodedJWT.getClaim(ROLE_CLAIM).asString();
 
+
+
         UserDto user = userService.findByLogin(decodedJWT.getIssuer());
 
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
+        if (role == null) {
+            role = "USER";
+        }
+
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
 
         return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
