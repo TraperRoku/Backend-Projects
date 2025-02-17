@@ -1,59 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchMovieDetails, fetchMovieSchedules } from '../services/api';
-import SeatPicker from './SeatPicker';
-import ReservationForm from './ReservationForm';
+import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Movie.css';
 
 const MovieDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
-  const [schedules, setSchedules] = useState([]);
-  const [selectedScheduleId, setSelectedScheduleId] = useState(null);
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchMovieDetails(id).then((response) => setMovie(response.data));
+    const fetchMovieDetails = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:8080/api/movies/${id}`);
+        setMovie(response.data);
+      } catch (err) {
+        setError('Nie udało się pobrać szczegółów filmu');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchMovieDetails();
+    }
   }, [id]);
 
-  useEffect(() => {
-    if (movie) {
-      fetchMovieSchedules(movie.id).then((response) => setSchedules(response.data));
-    }
-  }, [movie]);
+  // Obsługa rezerwacji
+  const handleReservation = () => {
+    navigate(`/reservation/${id}`); // Przekierowanie do strony rezerwacji
+  };
 
-  if (!movie) return <div>Loading...</div>;
+  if (loading) return <div>Ładowanie...</div>;
+  if (error) return <div>Błąd: {error}</div>;
+  if (!movie) return <div>Nie znaleziono filmu</div>;
 
   return (
-    <div>
-      <h1>{movie.title}</h1>
-      <p>{movie.description}</p>
-      <img src={movie.posterUrl} alt={movie.title} />
-
-      <h2>Wybierz datę i godzinę seansu:</h2>
-      <select onChange={(e) => setSelectedScheduleId(e.target.value)}>
-        <option value="">Wybierz seans</option>
-        {schedules.map((schedule) => (
-          <option key={schedule.id} value={schedule.id}>
-            {new Date(schedule.startTime).toLocaleString()}
-          </option>
-        ))}
-      </select>
-
-      {selectedScheduleId && (
-        <>
-          <h2>Wybierz miejsca:</h2>
-          <SeatPicker
-            movieScheduleId={selectedScheduleId}
-            selectedSeats={selectedSeats}
-            onSeatSelect={setSelectedSeats}
+    <div className="movie-details">
+      <div className="movie-header">
+        <h1 className="movie-title">{movie.title}</h1>
+        {movie.posterUrl && (
+          <img 
+            src={movie.posterUrl} 
+            alt={movie.title} 
+            className="movie-poster"
           />
-          <ReservationForm
-            movieScheduleId={selectedScheduleId}
-            selectedSeats={selectedSeats}
-          />
-        </>
-      )}
+        )}
+      </div>
+      
+      <div className="movie-info">
+        <div className="movie-description">
+          <h2>Opis</h2>
+          <p>{movie.description}</p>
+        </div>
+
+        <div className="movie-metadata">
+          {movie.duration && (
+            <div className="movie-duration">
+              <strong>Czas trwania:</strong> {movie.duration} min
+            </div>
+          )}
+          
+          {movie.genre && movie.genre.length > 0 && (
+            <div className="movie-genres">
+              <strong>Gatunki:</strong> {movie.genre.join(', ')}
+            </div>
+          )}
+        </div>
+
+        {/* 🔥 Nowy przycisk rezerwacji */}
+        <button onClick={handleReservation} className="reserve-button">
+          🎟 Zarezerwuj miejsce
+        </button>
+
+      </div>
     </div>
   );
 };

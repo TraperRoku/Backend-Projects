@@ -39,7 +39,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<Movie />} />
-        <Route path="/reservation" element={<Reservation />} />
+        <Route path="/reservation/:id" element={<Reservation />} /> 
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterForm onRegister={handleLogin} />} />
         <Route path="/add-movie" element={<AddMovieForm />} />  

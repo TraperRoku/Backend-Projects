@@ -1,27 +1,101 @@
-.movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem; /* gap-4 */
-    padding: 1rem; /* p-4 */
+/* Kontener główny */
+.movie-details {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #1a1a1a;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.3);
+  text-align: center;
+}
+
+/* Nagłówek z tytułem i plakatem */
+.movie-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.movie-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  color: #FFD700; /* Złoty */
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.5);
+}
+
+/* Plakat filmu */
+.movie-poster {
+  max-width: 300px;
+  border-radius: 8px;
+  border: 3px solid #FFD700;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Opis i metadane */
+.movie-info {
+  margin-top: 20px;
+}
+
+.movie-description h2 {
+  font-size: 1.8rem;
+  color: #E50914; /* Netflix Red */
+}
+
+.movie-description p {
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+/* Dodatkowe informacje */
+.movie-metadata {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #aaa;
+}
+
+.movie-duration {
+  font-weight: bold;
+}
+
+.movie-genres {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Przycisk rezerwacji */
+.reserve-button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  font-size: 1.3rem;
+  font-family: 'Bebas Neue', sans-serif;
+  background-color: #E50914;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.reserve-button:hover {
+  background-color: #b20710;
+  transform: scale(1.05);
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  .movie-title {
+      font-size: 2rem;
   }
-  
-  .movie-card {
-    border: 1px solid #e5e7eb; /* border-gray-200 */
-    border-radius: 0.5rem; /* rounded-lg */
-    padding: 1rem; /* p-4 */
-    text-align: center;
+
+  .movie-poster {
+      max-width: 250px;
   }
-  
-  .movie-card img {
-    max-width: 100%;
-    border-radius: 0.5rem; /* rounded-lg */
+
+  .reserve-button {
+      font-size: 1.2rem;
+      padding: 10px 16px;
   }
-  
-  .movie-card h3 {
-    margin: 0.5rem 0; /* my-2 */
-  }
-  
-  .movie-card p {
-    font-size: 0.875rem; /* text-sm */
-    color: #6b7280; /* text-gray-600 */
-  }
+}

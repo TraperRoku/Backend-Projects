@@ -22,6 +22,8 @@ public class Movie {
 
     private String title;
 
+    private String description;
+
     @ElementCollection
     @CollectionTable(name = "movie_genre" , joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre")
