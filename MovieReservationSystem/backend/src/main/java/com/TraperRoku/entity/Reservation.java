@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Reservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

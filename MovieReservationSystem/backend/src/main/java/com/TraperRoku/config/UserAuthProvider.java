@@ -41,9 +41,12 @@ public class UserAuthProvider {
         UserDto user = userService.findByLogin(login);
         String role = user.getRole();
 
+        Long userId = user.getId();
+
         return JWT.create()
                 .withIssuer(login)  // Ustawienie loginu użytkownika jako issuer
                 .withClaim(ROLE_CLAIM, role)
+                .withClaim("userId", userId)
                 .withIssuedAt(now)
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 dni
                 .sign(algorithm);

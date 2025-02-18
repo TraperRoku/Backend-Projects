@@ -16,7 +16,7 @@ public class MovieController {
 
     @PostMapping
     public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-        return ResponseEntity.ok(movieService.createMovie(movie));
+        return ResponseEntity.ok(movieService.createMovieWithScheduleAndSeats(movie));
     }
 
     @GetMapping
@@ -35,3 +35,4 @@ public class MovieController {
         return ResponseEntity.noContent().build();
     }
 }
+

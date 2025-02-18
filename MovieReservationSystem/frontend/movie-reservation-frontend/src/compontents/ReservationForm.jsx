@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Reservation.css";
+import { getUserIdFromToken } from "./jwtUtils";
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
@@ -31,23 +32,44 @@ const ReservationForm = () => {
                 : [...prev, seatId]
         );
     };
-
     const handleReservation = async () => {
         try {
-            const userId = localStorage.getItem("user_id"); // ID użytkownika z localStorage
-            const response = await axios.post(`${BASE_URL}/api/reservation`, null, {
-                params: {
-                    userId: userId,
-                    movieScheduleId: id,
-                    seatIds: selectedSeats,
-                },
-            });
-            alert("Rezerwacja udana!");
-            navigate("/"); // Powrót do strony głównej
+            const token = localStorage.getItem("auth_token");
+            const userId = getUserIdFromToken();
+            
+            console.log('UserId from token:', userId); // Dla debugowania
+            
+            if (!token || !userId) {
+                setError("Nie jesteś zalogowany. Zaloguj się, aby zarezerwować miejsca.");
+                return;
+            }
+    
+            const params = new URLSearchParams();
+            params.append("userId", userId);
+            params.append("movieScheduleId", id);
+            selectedSeats.forEach(seatId => params.append("seatIds", seatId));
+    
+            const response = await axios.post(
+                `${BASE_URL}/api/reservation?${params.toString()}`,
+                null,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+    
+            if (response.data) {
+                alert("Rezerwacja została utworzona pomyślnie!");
+                navigate("/");
+            }
         } catch (err) {
-            setError("Błąd podczas rezerwacji.");
+            console.error('Błąd podczas rezerwacji:', err);
+            setError("Wystąpił błąd podczas rezerwacji.");
         }
     };
+    
+    
 
     return (
         <div className="reservation-page">

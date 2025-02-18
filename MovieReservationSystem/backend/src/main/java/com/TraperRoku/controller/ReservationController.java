@@ -16,12 +16,15 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestParam Long userId,
-                                                         @RequestParam Long movieScheduleId,
-                                                         @RequestParam List<Long> seatIds){
+    public ResponseEntity<Reservation> createReservation(
+            @RequestParam Long userId,
+            @RequestParam Long movieScheduleId,
+            @RequestParam(name = "seatIds") List<Long> seatIds) {
+
         Reservation reservation = reservationService.createReservation(userId, movieScheduleId, seatIds);
         return ResponseEntity.ok(reservation);
     }
+
 
     @PostMapping("/{reservationId}/cancel")
     public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId){
