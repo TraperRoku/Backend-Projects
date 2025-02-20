@@ -1,17 +1,104 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Reservation.css";
 import { getUserIdFromToken } from "./jwtUtils";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import "./Reservation.css";
+import axiosInstance from '../axios_helper';
+
+// Move this outside and ensure it's loaded with your actual publishable key
+const stripePromise = loadStripe("pk_test_51QuiwPFQtGhYAs2cIZRf1vggEzWIyEKySJa6kj2k4WQgYOTIU8FxkkfcsSkHnZbDbIJV2qa7hb9UZJPteULLFTyE00d5cWPpy4");
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
-const ReservationForm = () => {
-    const { id } = useParams(); // ID seansu filmowego
+const PaymentForm = ({ reservationId }) => {
+    const stripe = useStripe();
+    const elements = useElements();
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const [processing, setProcessing] = useState(false);
+
+    const handlePayment = async (event) => {
+        event.preventDefault();
+        
+        if (!stripe || !elements) {
+            return;
+        }
+
+        setProcessing(true);
+        setError(null);
+
+        try {
+            // Użyj skonfigurowanego axiosInstance, który automatycznie doda token
+            const response = await axiosInstance.post('/api/payments/create-intent', {
+                reservationId
+            });
+
+            const clientSecret = response.data;
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: { card: elements.getElement(CardElement) }
+            });
+
+            if (result.error) {
+                setError(result.error.message);
+            } else {
+                // Potwierdź płatność używając skonfigurowanego axiosInstance
+                await axiosInstance.post(`/api/payments/confirm/${reservationId}`, {
+                    paymentIntentId: result.paymentIntent.id,
+                    status: "SUCCESS"
+                });
+                
+                alert("Płatność zakończona sukcesem!");
+                navigate("/");
+            }
+        } catch (err) {
+            if (err.response?.status === 401) {
+                setError("Sesja wygasła. Proszę zalogować się ponownie.");
+                navigate("/login");
+            } else {
+                setError("Błąd podczas płatności. Spróbuj ponownie.");
+            }
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    return (
+        <form onSubmit={handlePayment} className="payment-form">
+            <CardElement options={{
+                style: {
+                    base: {
+                        fontSize: '16px',
+                        color: '#424770',
+                        '::placeholder': {
+                            color: '#aab7c4',
+                        },
+                    },
+                    invalid: {
+                        color: '#9e2146',
+                    },
+                },
+            }}/>
+            {error && <p className="error-message">{error}</p>}
+            <button 
+                type="submit" 
+                disabled={!stripe || processing}
+                className="payment-button"
+            >
+                {processing ? "Przetwarzanie..." : "Zapłać"}
+            </button>
+        </form>
+    );
+};
+
+const ReservationForm = () => {
+    const { id } = useParams();
     const [seats, setSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
+    const [reservationId, setReservationId] = useState(null);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSeats = async () => {
@@ -27,49 +114,34 @@ const ReservationForm = () => {
 
     const toggleSeatSelection = (seatId) => {
         setSelectedSeats((prev) =>
-            prev.includes(seatId)
-                ? prev.filter((s) => s !== seatId)
-                : [...prev, seatId]
+            prev.includes(seatId) ? prev.filter((s) => s !== seatId) : [...prev, seatId]
         );
     };
+
     const handleReservation = async () => {
         try {
-            const token = localStorage.getItem("auth_token");
-            const userId = getUserIdFromToken();
-            
-            console.log('UserId from token:', userId); // Dla debugowania
-            
-            if (!token || !userId) {
-                setError("Nie jesteś zalogowany. Zaloguj się, aby zarezerwować miejsca.");
-                return;
-            }
-    
+            // Użyj skonfigurowanego axiosInstance
             const params = new URLSearchParams();
-            params.append("userId", userId);
+            params.append("userId", getUserIdFromToken());
             params.append("movieScheduleId", id);
             selectedSeats.forEach(seatId => params.append("seatIds", seatId));
     
-            const response = await axios.post(
-                `${BASE_URL}/api/reservation?${params.toString()}`,
-                null,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+            const response = await axiosInstance.post(
+                `/api/reservation?${params.toString()}`
             );
     
             if (response.data) {
-                alert("Rezerwacja została utworzona pomyślnie!");
-                navigate("/");
+                setReservationId(response.data.id);
             }
         } catch (err) {
-            console.error('Błąd podczas rezerwacji:', err);
-            setError("Wystąpił błąd podczas rezerwacji.");
+            if (err.response?.status === 401) {
+                setError("Sesja wygasła. Proszę zalogować się ponownie.");
+                navigate("/login");
+            } else {
+                setError("Błąd podczas rezerwacji.");
+            }
         }
     };
-    
-    
 
     return (
         <div className="reservation-page">
@@ -86,9 +158,21 @@ const ReservationForm = () => {
                     </button>
                 ))}
             </div>
-            <button onClick={handleReservation} className="reserve-button">
+            <button 
+                onClick={handleReservation} 
+                className="reserve-button"
+                disabled={selectedSeats.length === 0}
+            >
                 Zarezerwuj {selectedSeats.length > 0 ? `(${selectedSeats.length})` : ""}
             </button>
+
+            {reservationId && (
+                <div className="payment-container">
+                    <Elements stripe={stripePromise}>
+                        <PaymentForm reservationId={reservationId} />
+                    </Elements>
+                </div>
+            )}
         </div>
     );
 };

@@ -1,11 +1,14 @@
 package com.TraperRoku.entity;
 
+import com.TraperRoku.enums.SeatCategory;
 import com.TraperRoku.enums.SeatStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -32,7 +35,25 @@ public class Seat {
     @Column(nullable = false)
     private SeatStatus status;
 
+    @Column(nullable = false)
+    private Double price;
 
+    @Enumerated(EnumType.STRING)
 
+    private SeatCategory category;
 
+    public double getPrice() {
+        if (category == null) {
+            return 20.00;
+        }
+
+        switch (category) {
+            case VIP:
+                return 50.00;
+            case ECONOMY:
+                return 15.00;
+            default:
+                return 20.00;
+        }
+    }
 }

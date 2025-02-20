@@ -29,6 +29,6 @@ public class PaymentController {
 
     @PostMapping("confirm/{reservationId}")
     public ResponseEntity<?> confirmPayment(@PathVariable Long reservationId, @RequestBody PaymentConfirmationDto confirmation){
-        return ResponseEntity.ok(paymentService.confirmPAyment(reservationId,confirmation));
+        return ResponseEntity.ok(paymentService.confirmPayment(reservationId,confirmation));
     }
 }

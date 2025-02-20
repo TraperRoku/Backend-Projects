@@ -3,6 +3,7 @@ package com.TraperRoku.service;
 import com.TraperRoku.entity.Movie;
 import com.TraperRoku.entity.MovieSchedule;
 import com.TraperRoku.entity.Seat;
+import com.TraperRoku.enums.SeatCategory;
 import com.TraperRoku.enums.SeatStatus;
 import com.TraperRoku.repository.MovieRepository;
 import com.TraperRoku.repository.MovieScheduleRepository;
@@ -58,6 +59,11 @@ public class MovieService {
                     seat.setRowNumber(row);
                     seat.setSeatNumber(seatNum);
                     seat.setStatus(SeatStatus.AVAILABLE);
+
+
+                    seat.setCategory(SeatCategory.STANDARD);
+                    seat.setPrice(seat.getPrice());
+
                     seats.add(seat);
                 }
             }

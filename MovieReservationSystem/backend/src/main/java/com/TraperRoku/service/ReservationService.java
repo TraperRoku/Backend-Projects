@@ -27,6 +27,9 @@ public class ReservationService {
     private final UserRepository userRepository;
 
 
+    public Reservation getReservationById(Long requestReservationId){
+        return reservationRepository.findById(requestReservationId).orElseThrow(()-> new IllegalArgumentException("There is not reservation with that id"));
+    }
 
     @Transactional
     public Reservation createReservation(Long userId, Long movieScheduleId, List<Long> seatIds){

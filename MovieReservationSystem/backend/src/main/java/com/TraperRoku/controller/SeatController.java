@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/movies/{movieScheduleId}/seats") // 👈 Ścieżka pasuje do zapytania z frontendu
+@RequestMapping("/api/movies/{movieScheduleId}/seats")
 @RequiredArgsConstructor
 public class SeatController {
 
     private final SeatService seatService;
 
-    // Pobiera wszystkie miejsca dla danego seansu (MovieSchedule)
     @GetMapping
     public ResponseEntity<List<Seat>> getSeatsByMovieSchedule(@PathVariable Long movieScheduleId) {
         List<Seat> seats = seatService.getSeatsByMovieSchedule(movieScheduleId);

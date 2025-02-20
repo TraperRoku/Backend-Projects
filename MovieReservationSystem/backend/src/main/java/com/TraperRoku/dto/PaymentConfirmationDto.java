@@ -9,4 +9,5 @@ public class PaymentConfirmationDto {
     private String paymentIntentId;
     private String paymentMethodId;
     private String confirmationToken;
+    private String status;
 }

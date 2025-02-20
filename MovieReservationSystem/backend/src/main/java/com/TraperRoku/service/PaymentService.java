@@ -31,9 +31,10 @@ public class PaymentService {
         Stripe.apiKey = stripeSecretKey;
 
         Reservation reservation = reservationService.getReservationById(request.getReservationId());
+        double totalAmount = reservation.getTotalPrice() * 100;
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount((long) (reservation.getTotalPrice() * 100))
+                .setAmount((long) totalAmount)
                 .setCurrency("pln")
                 .putMetadata("reservationId", reservation.getId().toString())
                 .build();
@@ -52,6 +53,7 @@ public class PaymentService {
         payment.setAmount(reservation.getTotalPrice());
         payment.setPaymentDate(LocalDateTime.now());
         payment.setPaymentStatus(PaymentStatus.valueOf(confirmation.getStatus().toUpperCase()));
+        // payment.setPaymentStatus(PaymentStatus.SUCCESS);
 
         return paymentRepository.save(payment);
     }
