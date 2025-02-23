@@ -21,17 +21,33 @@ public class SeatController {
         return ResponseEntity.ok(seats);
     }
 
-    // Zmiana statusu miejsca (np. RESERVED)
     @PostMapping("/{seatId}/reserve")
     public ResponseEntity<Seat> reserveSeat(@PathVariable Long seatId) {
         Seat reservedSeat = seatService.reserveSeat(seatId);
         return ResponseEntity.ok(reservedSeat);
     }
 
-    // Zwolnienie miejsca (np. z RESERVED na AVAILABLE)
     @PostMapping("/{seatId}/cancel")
     public ResponseEntity<Seat> cancelReservation(@PathVariable Long seatId) {
         Seat availableSeat = seatService.cancelReservation(seatId);
         return ResponseEntity.ok(availableSeat);
+    }
+
+    @PostMapping("/unblock")
+    public ResponseEntity<String> unblockSeats(
+            @PathVariable Long movieScheduleId, // Użyj @PathVariable zamiast @RequestParam
+            @RequestParam List<Long> seatIds
+    ) {
+        seatService.unblockSeats(movieScheduleId, seatIds);
+        return ResponseEntity.ok("Miejsca odblokowane.");
+    }
+
+    @PostMapping("/block")
+    public ResponseEntity<String> blockSeats(
+            @PathVariable Long movieScheduleId,
+            @RequestParam List<Long> seatIds
+    ) {
+        seatService.blockSeats(movieScheduleId, seatIds);
+        return ResponseEntity.ok("Miejsca zablokowane.");
     }
 }

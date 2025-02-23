@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -41,6 +42,9 @@ public class Seat {
     @Enumerated(EnumType.STRING)
 
     private SeatCategory category;
+
+    @Column(name = "locked_until")
+    private LocalDateTime lockedUntil;
 
     public double getPrice() {
         if (category == null) {

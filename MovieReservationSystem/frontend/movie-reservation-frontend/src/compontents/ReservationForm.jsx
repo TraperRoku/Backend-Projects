@@ -7,12 +7,11 @@ import { Elements, useStripe, useElements, CardElement } from "@stripe/react-str
 import "./Reservation.css";
 import axiosInstance from '../axios_helper';
 
-// Move this outside and ensure it's loaded with your actual publishable key
 const stripePromise = loadStripe("pk_test_51QuiwPFQtGhYAs2cIZRf1vggEzWIyEKySJa6kj2k4WQgYOTIU8FxkkfcsSkHnZbDbIJV2qa7hb9UZJPteULLFTyE00d5cWPpy4");
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
 
-const PaymentForm = ({ reservationId }) => {
+const PaymentForm = ({ reservationId, selectedSeats, id }) => {
     const stripe = useStripe();
     const elements = useElements();
     const navigate = useNavigate();
@@ -30,7 +29,7 @@ const PaymentForm = ({ reservationId }) => {
         setError(null);
 
         try {
-            // Użyj skonfigurowanego axiosInstance, który automatycznie doda token
+            // Utwórz intencję płatności
             const response = await axiosInstance.post('/api/payments/create-intent', {
                 reservationId
             });
@@ -42,11 +41,16 @@ const PaymentForm = ({ reservationId }) => {
 
             if (result.error) {
                 setError(result.error.message);
+                // Odblokuj miejsca w przypadku błędu płatności
+                await axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
+                    params: {
+                        seatIds: selectedSeats.join(",")
+                    }
+                });
             } else {
-                // Potwierdź płatność używając skonfigurowanego axiosInstance
-                await axiosInstance.post(`/api/payments/confirm/${reservationId}`, {
-                    paymentIntentId: result.paymentIntent.id,
-                    status: "SUCCESS"
+                // Potwierdź rezerwację po pomyślnej płatności
+                await axiosInstance.post(`/api/reservation/confirm/${reservationId}`, {
+                    paymentIntentId: result.paymentIntent.id
                 });
                 
                 alert("Płatność zakończona sukcesem!");
@@ -58,6 +62,12 @@ const PaymentForm = ({ reservationId }) => {
                 navigate("/login");
             } else {
                 setError("Błąd podczas płatności. Spróbuj ponownie.");
+                // Odblokuj miejsca w przypadku błędu
+                await axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
+                    params: {
+                        seatIds: selectedSeats.join(",")
+                    }
+                });
             }
         } finally {
             setProcessing(false);
@@ -112,6 +122,21 @@ const ReservationForm = () => {
         fetchSeats();
     }, [id]);
 
+    useEffect(() => {
+        return () => {
+            // Odblokuj miejsca, gdy komponent jest odmontowywany (użytkownik opuszcza stronę)
+            if (selectedSeats.length > 0 && !reservationId) {
+                axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
+                    params: {
+                        seatIds: selectedSeats.join(",")
+                    }
+                }).catch(err => {
+                    console.error("Błąd podczas odblokowywania miejsc:", err);
+                });
+            }
+        };
+    }, [selectedSeats, id, reservationId]);
+
     const toggleSeatSelection = (seatId) => {
         setSelectedSeats((prev) =>
             prev.includes(seatId) ? prev.filter((s) => s !== seatId) : [...prev, seatId]
@@ -120,16 +145,23 @@ const ReservationForm = () => {
 
     const handleReservation = async () => {
         try {
-            // Użyj skonfigurowanego axiosInstance
+            // Blokuj miejsca
+            await axiosInstance.post(`/api/movies/${id}/seats/block`, null, {
+                params: {
+                    seatIds: selectedSeats.join(",")
+                }
+            });
+
+            // Utwórz rezerwację
             const params = new URLSearchParams();
             params.append("userId", getUserIdFromToken());
             params.append("movieScheduleId", id);
             selectedSeats.forEach(seatId => params.append("seatIds", seatId));
-    
+
             const response = await axiosInstance.post(
                 `/api/reservation?${params.toString()}`
             );
-    
+
             if (response.data) {
                 setReservationId(response.data.id);
             }
@@ -151,13 +183,15 @@ const ReservationForm = () => {
                 {seats.map((seat) => (
                     <button
                         key={seat.id}
-                        className={`seat ${selectedSeats.includes(seat.id) ? "selected" : ""}`}
+                        className={`seat ${seat.status} ${selectedSeats.includes(seat.id) ? "selected" : ""}`}
                         onClick={() => toggleSeatSelection(seat.id)}
+                        disabled={seat.status === "RESERVED" || seat.status === "PENDING"} 
                     >
-                        {seat.number}
+                        {seat.seatNumber}
                     </button>
                 ))}
             </div>
+
             <button 
                 onClick={handleReservation} 
                 className="reserve-button"
@@ -169,7 +203,7 @@ const ReservationForm = () => {
             {reservationId && (
                 <div className="payment-container">
                     <Elements stripe={stripePromise}>
-                        <PaymentForm reservationId={reservationId} />
+                        <PaymentForm reservationId={reservationId} selectedSeats={selectedSeats} id={id} />
                     </Elements>
                 </div>
             )}

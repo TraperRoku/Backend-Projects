@@ -1,5 +1,6 @@
 package com.TraperRoku.controller;
 
+import com.TraperRoku.dto.CancelReservationDto;
 import com.TraperRoku.entity.Reservation;
 import com.TraperRoku.service.ReservationService;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +27,18 @@ public class ReservationController {
     }
 
 
-    @PostMapping("/{reservationId}/cancel")
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId){
+    @PostMapping("/cancel/{reservationId}")
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId) {
         reservationService.cancelReservation(reservationId);
-        return ResponseEntity.noContent().build();
-
+        return ResponseEntity.ok("Rezerwacja anulowana.");
     }
-
-    @PostMapping("/{reservationId}/confirm")
-    public ResponseEntity<Reservation> confirmReservation(@PathVariable Long reservationId){
-        Reservation reservation = reservationService.confirmReservation(reservationId);
-        return ResponseEntity.ok(reservation);
+    @PostMapping("/confirm/{reservationId}")
+    public ResponseEntity<String> confirmReservation(
+            @PathVariable Long reservationId
+    ) {
+        reservationService.confirmReservation(reservationId);
+        return ResponseEntity.ok("Rezerwacja potwierdzona.");
     }
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable Long userId){
         return ResponseEntity.ok(reservationService.getAllReservation(userId));

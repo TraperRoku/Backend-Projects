@@ -55,3 +55,39 @@
     background-color: #b20710;
     transform: scale(1.05);
 }
+
+
+.seat {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+
+.seat.AVAILABLE {
+    background-color: green;
+    color: white;
+    border: 2px solid darkgreen;
+}
+
+
+.seat.RESERVED {
+    background-color: gray;
+    color: white;
+    border: 2px solid darkgray;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.seat.selected {
+    background-color: blue;
+    color: white;
+    border: 2px solid darkblue;
+}
+

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import './Header.css';
 
 
@@ -8,7 +8,8 @@ const Header = ({ isLoggedIn, userRole, onLogout }) => {
     <header className="p-4 bg-gray-800 text-white flex justify-between">
       <Link to="/" className="text-xl font-bold">🎬 MovieApp</Link>
       <nav className="space-x-4">
-        <Link to="/">Home</Link>
+        <Link to="/">Repertuar</Link>
+       
         {isLoggedIn && userRole === "ADMIN" && (  // Tylko dla ADMINA
           <Link to="/add-movie" className="bg-green-500 px-3 py-1 rounded">Add Movie</Link>
         )}

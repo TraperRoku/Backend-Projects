@@ -1,5 +1,6 @@
 package com.TraperRoku.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -19,10 +22,13 @@ public class MovieSchedule {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "movie_id",nullable = false)
+    @JoinColumn(name = "movie_id", nullable = false)
+    @JsonBackReference
     private Movie movie;
 
     @Column(nullable = false)
-    private LocalDateTime showTime;
+    private LocalDateTime  showTime;
+
+
 
 }

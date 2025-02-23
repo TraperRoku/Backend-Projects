@@ -13,6 +13,7 @@ import AddMovieForm from "../movieFolder/AddMovieForm";
 import './global.css';
 
 
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!getAuthToken());
   const [userRole, setUserRole] = useState(null);
@@ -43,6 +44,7 @@ const App = () => {
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterForm onRegister={handleLogin} />} />
         <Route path="/add-movie" element={<AddMovieForm />} />  
+   
       </Routes>
       <Footer />
     </Router>

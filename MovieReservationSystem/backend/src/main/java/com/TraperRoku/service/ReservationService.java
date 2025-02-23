@@ -35,10 +35,11 @@ public class ReservationService {
     public Reservation createReservation(Long userId, Long movieScheduleId, List<Long> seatIds){
 
 
+/*
         List<Seat> seatsToReserve = seatRepository.findAllByMovieScheduleIdAndIdInAndStatus(movieScheduleId, seatIds, SeatStatus.AVAILABLE);
         if (seatsToReserve.size() != seatIds.size()) {
             throw new IllegalStateException("Niektóre miejsca są już zajęte!");
-        }
+        }*/
 
         User user =  userRepository.findById(userId).orElseThrow(()->
                 new IllegalArgumentException("There is not user with this id"));
@@ -49,7 +50,7 @@ public class ReservationService {
         List<Seat> seats = seatRepository.findAllById(seatIds);
 
 
-        seats.forEach(seat -> seat.setStatus(SeatStatus.RESERVED));
+        seats.forEach(seat -> seat.setStatus(SeatStatus.PENDING));
         seatRepository.saveAll(seats);
 
         Reservation reservation = new Reservation();
@@ -63,34 +64,30 @@ public class ReservationService {
     }
 
     @Transactional
-    public void cancelReservation(Long reservationId){
-        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+    public void cancelReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
-        if(reservationOptional.isPresent()){
-            Reservation reservation = reservationOptional.get();
-            if(reservation.getReservationStatus() == ReservationStatus.CONFIRMED){
-                throw new IllegalStateException("Cant cancel payed reservation");
-            }
-            reservation.setReservationStatus(ReservationStatus.CANCELLED);
-            reservationRepository.save(reservation);
-        }
-        throw new IllegalStateException("There is not reservation like this");
+        reservation.setReservationStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);
+
+        List<Seat> seats = reservation.getSeats();
+        seats.forEach(seat -> seat.setStatus(SeatStatus.AVAILABLE));
+        seatRepository.saveAll(seats);
     }
 
     @Transactional
-    public Reservation confirmReservation(Long reservationId){
-        Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+    public void confirmReservation(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
 
-        if(reservationOptional.isPresent()){
-            Reservation reservation = reservationOptional.get();
-            if(reservation.getReservationStatus() != ReservationStatus.PENDING){
-                throw new IllegalStateException("Reservation isnt in Pending Status  ");
-            }
-            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
-            reservationRepository.save(reservation);
-        }
-        throw new IllegalStateException("There is not reservation like this");
+        reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+        reservationRepository.save(reservation);
 
+
+        List<Seat> seats = reservation.getSeats();
+        seats.forEach(seat -> seat.setStatus(SeatStatus.RESERVED));
+        seatRepository.saveAll(seats);
     }
     public List<Reservation> getAllReservation(Long userId){
         return reservationRepository.findByUserId(userId);

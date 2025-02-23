@@ -13,7 +13,8 @@ const AddMovieForm = () => {
         duration: '',
         posterUrl: '',
         startDate: '', 
-        endDate: ''
+        endDate: '',
+        showTime: ''
     });
 
     const [newGenre, setNewGenre] = useState('');
@@ -190,6 +191,16 @@ const AddMovieForm = () => {
                         type="date" 
                         value={formData.endDate} 
                         onChange={(e) => setFormData({ ...formData, endDate: e.target.value })} 
+                        required 
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Show Time::</label>
+                    <input 
+                        type="time" 
+                        value={formData.showTime} 
+                        onChange={(e) => setFormData({ ...formData, showTime: e.target.value })} 
                         required 
                     />
                 </div>

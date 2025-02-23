@@ -84,6 +84,131 @@
   transform: scale(1.05);
 }
 
+/* Main container */
+.movie-list-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #1a1a1a;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.3);
+  text-align: center;
+}
+
+.week-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.week-navigation button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #E50914;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.week-navigation button:hover {
+  background-color: #b20710;
+  transform: scale(1.05);
+}
+
+.date-picker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.date-picker button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #E50914;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.date-picker button.active {
+  background-color: #b20710;
+  transform: scale(1.05);
+}
+
+.date-picker button:hover {
+  background-color: #b20710;
+  transform: scale(1.05);
+}
+
+/* Movie list */
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Movie card */
+.movie-card {
+  background: #2a2a2a;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px rgba(255, 0, 0, 0.5);
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  border-bottom: 3px solid #E50914;
+}
+
+.movie-card h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  color: #FFD700; /* Gold */
+  margin: 10px 0;
+  letter-spacing: 1px;
+}
+
+.movie-card p {
+  font-size: 1rem;
+  color: #ccc;
+  margin: 5px 10px;
+}
+
+.movie-card p:last-child {
+  font-size: 1.1rem;
+  color: #E50914; /* Netflix Red */
+  font-weight: bold;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .movie-list {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .movie-card h2 {
+      font-size: 1.3rem;
+  }
+
+  .movie-card p {
+      font-size: 0.9rem;
+  }
+}
+
+
 /* Responsywność */
 @media (max-width: 768px) {
   .movie-title {
@@ -98,4 +223,7 @@
       font-size: 1.2rem;
       padding: 10px 16px;
   }
+
+
+
 }
