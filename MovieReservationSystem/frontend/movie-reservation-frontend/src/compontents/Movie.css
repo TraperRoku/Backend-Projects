@@ -1,4 +1,4 @@
-/* Kontener główny */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Bebas+Neue&display=swap');
 .movie-details {
   max-width: 900px;
   margin: 40px auto;
@@ -64,6 +64,92 @@
   margin-top: 10px;
   font-style: italic;
 }
+
+.movie-list-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.date-picker {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.date-picker button {
+  padding: 10px;
+  margin: 5px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.date-picker .active {
+  background-color: #007bff;
+  color: white;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.movie-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 250px;
+}
+
+.movie-poster {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.movie-info h2 {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.movie-info p {
+  font-size: 14px;
+  color: #555;
+}
+
+.movie-schedules {
+  margin-top: 10px;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f3f3f3;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+.reserve-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.reserve-btn:hover {
+  background-color: #218838;
+}
+
+.no-movies {
+  font-size: 16px;
+  color: #777;
+}
+
 
 /* Przycisk rezerwacji */
 .reserve-button {
@@ -226,4 +312,50 @@
 
 
 
+}
+
+.showtime-selection {
+  margin-top: 20px;
+}
+
+.showtime-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.showtime-option:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 6px 10px rgba(255, 0, 0, 0.3);
+}
+
+.showtime-option p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #ccc;
+}
+
+/* Reserve button */
+.reserve-btn {
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-family: 'Bebas Neue', sans-serif;
+  background-color: #E50914; /* Netflix Red */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.reserve-btn:hover {
+  background-color: #b20710;
+  transform: scale(1.05);
 }

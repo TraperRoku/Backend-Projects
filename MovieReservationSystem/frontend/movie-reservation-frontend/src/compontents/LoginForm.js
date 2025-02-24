@@ -1,23 +1,33 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { request } from "../axios_helper";
-import './LoginForm.css'
+import './LoginForm.css';
 
 const LoginForm = ({ onLogin }) => {
   const [formData, setFormData] = useState({ login: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await request("POST", "/login", formData);
-        onLogin(response.data.token, response.data.user); 
-        navigate("/");
+      const response = await request("POST", "/login", formData);
+      onLogin(response.data.token, response.data.user); // Call the onLogin callback
+
+      // Redirect back to the reservation page with preserved state
+      const { from, movieScheduleId, selectedSeats } = location.state || {};
+      if (from && movieScheduleId && selectedSeats) {
+        navigate(from, {
+          state: { movieScheduleId, selectedSeats },
+        });
+      } else {
+        navigate("/"); // Default redirect if no reservation state is found
+      }
     } catch (error) {
-        setError("Invalid credentials. Please try again.");
+      setError("Invalid credentials. Please try again.");
     }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

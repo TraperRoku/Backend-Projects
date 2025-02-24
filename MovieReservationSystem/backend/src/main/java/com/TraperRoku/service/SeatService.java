@@ -21,6 +21,33 @@ public class SeatService {
         return seatRepository.findByMovieScheduleId(movieScheduleId);
     }
 
+    @Transactional
+    public void reserveSeatsForSchedule(Long movieScheduleId, List<Long> seatIds) {
+        // Find specific seats for this schedule
+        List<Seat> seats = seatRepository.findByMovieScheduleIdAndIdIn(movieScheduleId, seatIds);
+
+        // Verify all seats belong to the requested schedule
+        if (seats.size() != seatIds.size()) {
+            throw new IllegalArgumentException("Some seats not found for this schedule");
+        }
+
+        // Verify all seats are available
+        seats.forEach(seat -> {
+            if (seat.getStatus() != SeatStatus.AVAILABLE) {
+                throw new IllegalStateException(
+                        String.format("Seat %d in row %d is not available",
+                                seat.getSeatNumber(), seat.getRowNumber())
+                );
+            }
+        });
+
+        // Update status only for these specific seats
+        seats.forEach(seat -> seat.setStatus(SeatStatus.RESERVED));
+        seatRepository.saveAll(seats);
+    }
+
+
+
     // Rezerwacja miejsca
     @Transactional
     public Seat reserveSeat(Long seatId) {

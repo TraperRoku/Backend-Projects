@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, useLocation } from 'react-router-dom';
+import axiosInstance from '../axios_helper';
+import { Link } from 'react-router-dom';
 import './Movie.css';
 
 const MovieDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams(); 
+  const location = useLocation(); 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   useEffect(() => {
+    if (location.state?.selectedDate) {
+      setSelectedDate(location.state.selectedDate);
+    }
+
     const fetchMovieDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8080/api/movies/${id}`);
+        const response = await axiosInstance.get(`/api/movies/${id}`);
         setMovie(response.data);
       } catch (err) {
-        setError('Nie udało się pobrać szczegółów filmu');
+        console.error("Error fetching movie details:", err);
+        if (err.response?.status === 401) {
+          setError('Sesja wygasła. Zaloguj się ponownie.');
+        } else {
+          setError('Nie udało się pobrać szczegółów filmu');
+        }
       } finally {
         setLoading(false);
       }
@@ -26,15 +37,16 @@ const MovieDetails = () => {
     if (id) {
       fetchMovieDetails();
     }
-  }, [id]);
+  }, [id, location.state]);
 
-  // Obsługa rezerwacji
-  const handleReservation = () => {
-    navigate(`/reservation/${id}`); // Przekierowanie do strony rezerwacji
+  const isShowtimeOnSelectedDate = (showTime) => {
+    if (!showTime || !Array.isArray(showTime) || showTime.length !== 5) return false;
+    const showtimeDate = `${showTime[0]}-${String(showTime[1]).padStart(2, '0')}-${String(showTime[2]).padStart(2, '0')}`;
+    return showtimeDate === selectedDate;
   };
 
   if (loading) return <div>Ładowanie...</div>;
-  if (error) return <div>Błąd: {error}</div>;
+  if (error) return <div className="error-message">{error}</div>;
   if (!movie) return <div>Nie znaleziono filmu</div>;
 
   return (
@@ -70,14 +82,34 @@ const MovieDetails = () => {
           )}
         </div>
 
-        {/* 🔥 Nowy przycisk rezerwacji */}
-        <button onClick={handleReservation} className="reserve-button">
-          🎟 Zarezerwuj miejsce
-        </button>
-
+        <div className="showtime-selection">
+          <h3>🎥 Seanse na dzień {selectedDate}:</h3>
+          {movie.schedules && movie.schedules.length > 0 ? (
+            movie.schedules
+              .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime)) // Filter showtimes by selected date
+              .map((schedule) => (
+                <div key={schedule.id} className="showtime-option">
+                  <p>
+                    ⏰ {formatShowTime(schedule.showTime)} -  
+                    <Link to={`/reservation/${schedule.id}`} className="reserve-btn">
+                      Zarezerwuj
+                    </Link>
+                  </p>
+                </div>
+              ))
+          ) : (
+            <p>❌ Brak dostępnych seansów</p>
+          )}
+        </div>
       </div>
     </div>
   );
+};
+
+const formatShowTime = (showTime) => {
+  if (!showTime || !Array.isArray(showTime) || showTime.length !== 5) return "Brak godziny";
+  const [, , , hour, minute] = showTime; 
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 };
 
 export default MovieDetails;

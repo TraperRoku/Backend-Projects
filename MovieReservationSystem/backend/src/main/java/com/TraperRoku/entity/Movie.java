@@ -40,7 +40,10 @@ public class Movie {
 
     private int duration;
 
-    private LocalTime showTime;
+    @ElementCollection
+    @CollectionTable(name = "movie_show_times", joinColumns = @JoinColumn(name = "movie_id"))
+    @Column(name = "show_time")
+    private List<LocalTime> showTimes = new ArrayList<>();
 
     private String posterUrl;
 

@@ -23,7 +23,7 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
     @PostMapping
-    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
+    public ResponseEntity<List<Movie>> addMovie(@RequestBody Movie movie) {
         return ResponseEntity.ok(movieService.createMovieWithScheduleAndSeats(movie));
     }
 

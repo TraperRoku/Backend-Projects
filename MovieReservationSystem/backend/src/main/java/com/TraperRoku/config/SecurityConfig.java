@@ -31,9 +31,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/reservation/**").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/movies").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/movies/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/schedules/date/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

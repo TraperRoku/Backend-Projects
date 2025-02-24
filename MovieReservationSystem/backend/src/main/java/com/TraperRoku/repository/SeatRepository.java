@@ -19,4 +19,8 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     List<Seat> findByMovieScheduleId(Long movieScheduleId);
 
+    List<Seat> findAllByMovieScheduleIdAndIdIn(Long movieScheduleId, List<Long> seatIds);
+
+    List<Seat> findByMovieScheduleIdAndIdIn(Long movieScheduleId, List<Long> seatIds);
+
 }

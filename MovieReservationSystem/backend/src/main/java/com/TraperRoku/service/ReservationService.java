@@ -32,35 +32,45 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation createReservation(Long userId, Long movieScheduleId, List<Long> seatIds){
+    public Reservation createReservation(Long userId, Long movieScheduleId, List<Long> seatIds) {
+        // Sprawdź czy seans istnieje
+        MovieSchedule schedule = movieScheduleRepository.findById(movieScheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono seansu"));
+
+        // Sprawdź czy seans nie jest w przeszłości
+        if (schedule.getShowTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Nie można zarezerwować miejsc na seans, który już się odbył");
+        }
+
+        // Znajdź użytkownika
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
+
+        // Znajdź miejsca dla tego konkretnego seansu
+        List<Seat> seats = seatRepository.findAllByMovieScheduleIdAndIdIn(schedule.getId(), seatIds);
+
+        // Sprawdź czy wszystkie miejsca zostały znalezione
+        if (seats.size() != seatIds.size()) {
+            throw new IllegalArgumentException("Niektóre miejsca nie zostały znalezione dla tego seansu");
+        }
 
 
-/*
-        List<Seat> seatsToReserve = seatRepository.findAllByMovieScheduleIdAndIdInAndStatus(movieScheduleId, seatIds, SeatStatus.AVAILABLE);
-        if (seatsToReserve.size() != seatIds.size()) {
-            throw new IllegalStateException("Niektóre miejsca są już zajęte!");
-        }*/
-
-        User user =  userRepository.findById(userId).orElseThrow(()->
-                new IllegalArgumentException("There is not user with this id"));
-
-        MovieSchedule movieSchedule = movieScheduleRepository.findById(movieScheduleId).orElseThrow(()->new IllegalArgumentException(
-                "There is not movieSchedule with this id"
-        ));
-        List<Seat> seats = seatRepository.findAllById(seatIds);
-
-
-        seats.forEach(seat -> seat.setStatus(SeatStatus.PENDING));
+        // Ustaw status miejsc na PENDING
+        seats.forEach(seat -> {
+            seat.setStatus(SeatStatus.PENDING);
+            seat.setLockedUntil(LocalDateTime.now().plusMinutes(10));
+        });
         seatRepository.saveAll(seats);
 
+        // Utwórz rezerwację
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setReservationStatus(ReservationStatus.PENDING);
-        reservation.setMovieSchedule(movieSchedule);
+        reservation.setMovieSchedule(schedule);
         reservation.setSeats(seats);
         reservation.setCreatedAt(LocalDateTime.now());
 
-        return  reservationRepository.save(reservation);
+        return reservationRepository.save(reservation);
     }
 
     @Transactional
@@ -79,16 +89,24 @@ public class ReservationService {
     @Transactional
     public void confirmReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono rezerwacji"));
 
+        // Potwierdź rezerwację
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
-        reservationRepository.save(reservation);
 
-
+        // Zaktualizuj status miejsc tylko dla tego konkretnego seansu
         List<Seat> seats = reservation.getSeats();
-        seats.forEach(seat -> seat.setStatus(SeatStatus.RESERVED));
+        seats.forEach(seat -> {
+            if (seat.getMovieSchedule().getId().equals(reservation.getMovieSchedule().getId())) {
+                seat.setStatus(SeatStatus.RESERVED);
+                seat.setLockedUntil(null);
+            }
+        });
+
         seatRepository.saveAll(seats);
+        reservationRepository.save(reservation);
     }
+
     public List<Reservation> getAllReservation(Long userId){
         return reservationRepository.findByUserId(userId);
     }

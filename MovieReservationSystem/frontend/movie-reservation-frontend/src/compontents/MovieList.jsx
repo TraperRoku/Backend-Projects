@@ -14,19 +14,19 @@ const MovieList = () => {
     const newWeekStart = new Date(currentWeekStart);
     newWeekStart.setDate(newWeekStart.getDate() - 7);
     setCurrentWeekStart(newWeekStart);
-  }
+  };
 
   const goToNextWeek = () => {
     const newWeekStart = new Date(currentWeekStart);
     newWeekStart.setDate(newWeekStart.getDate() + 7);
     setCurrentWeekStart(newWeekStart);
-  }
+  };
 
   useEffect(() => {
     const fetchMoviesByDate = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/movies/schedule?date=${selectedDate}`);
-        console.log("Response data:", response.data); // Log the response data
+        console.log("Response data:", response.data); 
         setMovies(response.data);
       } catch (err) {
         console.error("Błąd podczas pobierania repertuaru", err);
@@ -34,7 +34,6 @@ const MovieList = () => {
     };
     fetchMoviesByDate();
   }, [selectedDate]);
-
 
   const generateWeekDays = () => {
     const days = [];
@@ -45,27 +44,30 @@ const MovieList = () => {
       date.setDate(date.getDate() + i);
       days.push(date);
     }
-
     return days;
   };
 
-  // Helper function to format time
   const formatShowTime = (showTime) => {
     if (!showTime) return "Brak godziny";
-
-    if (Array.isArray(showTime) && showTime.length === 2) {
-      const [hour, minute] = showTime;
+    if (Array.isArray(showTime) && showTime.length === 5) {
+      const [, , , hour, minute] = showTime;
       return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     }
-
     return showTime; // Fallback
+  };
+
+  // Helper function to check if a showtime matches the selected date
+  const isShowtimeOnSelectedDate = (showTime) => {
+    if (!showTime || !Array.isArray(showTime) || showTime.length !== 5) return false;
+    const [year, month, day] = showTime;
+    const showtimeDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return showtimeDate === selectedDate;
   };
 
   return (
     <div className="movie-list-container">
       <h1>📅 Wybierz dzień</h1>
 
-      
       <div className="week-navigation">
         <button onClick={goToPreviousWeek}>Poprzedni tydzień</button>
         <button onClick={goToNextWeek}>Następny tydzień</button>
@@ -97,10 +99,31 @@ const MovieList = () => {
             <div key={movie.id} className="movie-card">
               <img src={movie.posterUrl} alt={movie.title} />
               <h2>
-                <Link to={`/movie/${movie.id}`}>{movie.title}</Link>
+              <Link
+  to={`/movie/${movie.id}`}
+  state={{ selectedDate }} // Pass the selected date
+>
+  {movie.title}
+</Link>
               </h2>
               <p>{movie.description}</p>
-              <p>🎬 Godzina: {formatShowTime(movie.showTime)}</p>
+              <h3>🎥 Seanse:</h3>
+              {movie.schedules && movie.schedules.length > 0 ? (
+                movie.schedules
+                  .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime)) // Filter showtimes by selected date
+                  .map((schedule) => (
+                    <div key={schedule.id}>
+                      <p>
+                        ⏰ {formatShowTime(schedule.showTime)} -  
+                        <Link to={`/reservation/${schedule.id}`} className="reserve-btn">
+                          Zarezerwuj
+                        </Link>
+                      </p>
+                    </div>
+                  ))
+              ) : (
+                <p>❌ Brak dostępnych seansów</p>
+              )}
             </div>
           ))
         )}

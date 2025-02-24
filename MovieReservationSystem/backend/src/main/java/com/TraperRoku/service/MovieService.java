@@ -41,34 +41,40 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
     @Transactional
-    public Movie createMovieWithScheduleAndSeats(Movie movie) {
-        // 1. Save the movie
-        if (movie.getShowTime() != null) {
-            movie.setShowTime(movie.getShowTime().truncatedTo(ChronoUnit.MINUTES));
+    public List<Movie> createMovieWithScheduleAndSeats(Movie movie) {
+        // Ensure showTimes is not empty
+        if (movie.getShowTimes() == null || movie.getShowTimes().isEmpty()) {
+            throw new IllegalArgumentException("Show times must not be empty");
         }
+
+        List<Movie> listMovie = new ArrayList<>();
+
+        // Save the movie
         Movie savedMovie = movieRepository.save(movie);
 
-        // 2. Create schedules for specified dates
+        // Create schedules for the specified dates and showtimes
         List<MovieSchedule> schedules = new ArrayList<>();
         LocalDate startDate = movie.getStartDate();
         LocalDate endDate = movie.getEndDate();
-        LocalTime showTime = movie.getShowTime(); // LocalTime
 
         if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Nieprawidłowe daty filmu");
+            throw new IllegalArgumentException("Invalid movie dates");
         }
 
+        // Create a separate schedule for each day and each showtime
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            MovieSchedule schedule = new MovieSchedule();
-            schedule.setMovie(savedMovie);
-            schedule.setShowTime(LocalDateTime.of(date, showTime)); // Combine date and time
-            schedules.add(schedule);
+            for (LocalTime showTime : movie.getShowTimes()) {
+                MovieSchedule schedule = new MovieSchedule();
+                schedule.setMovie(savedMovie);
+                schedule.setShowTime(LocalDateTime.of(date, showTime));
+                schedules.add(schedule);
+            }
         }
-        movieScheduleRepository.saveAll(schedules);
+        List<MovieSchedule> savedSchedules = movieScheduleRepository.saveAll(schedules);
 
-        // 3. Create seats for each schedule
-        List<Seat> seats = new ArrayList<>();
-        for (MovieSchedule schedule : schedules) {
+        // Create seats for each schedule
+        for (MovieSchedule schedule : savedSchedules) {
+            List<Seat> seatsForSchedule = new ArrayList<>();
             for (int row = 1; row <= 5; row++) {
                 for (int seatNum = 1; seatNum <= 10; seatNum++) {
                     Seat seat = new Seat();
@@ -78,15 +84,15 @@ public class MovieService {
                     seat.setStatus(SeatStatus.AVAILABLE);
                     seat.setCategory(SeatCategory.STANDARD);
                     seat.setPrice(seat.getPrice());
-                    seats.add(seat);
+                    seatsForSchedule.add(seat);
                 }
             }
+            seatRepository.saveAll(seatsForSchedule);
         }
-        seatRepository.saveAll(seats);
 
-        return savedMovie;
+        listMovie.add(savedMovie);
+        return listMovie;
     }
-
     public Movie createMovie(Movie movie){
         return movieRepository.save(movie);
     }

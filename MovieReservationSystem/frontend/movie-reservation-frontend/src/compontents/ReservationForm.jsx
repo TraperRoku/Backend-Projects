@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { getUserIdFromToken } from "./jwtUtils";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import "./Reservation.css";
 import axiosInstance from '../axios_helper';
+import { getAuthToken} from '../axios_helper';
 
 const stripePromise = loadStripe("pk_test_51QuiwPFQtGhYAs2cIZRf1vggEzWIyEKySJa6kj2k4WQgYOTIU8FxkkfcsSkHnZbDbIJV2qa7hb9UZJPteULLFTyE00d5cWPpy4");
 
@@ -109,6 +110,7 @@ const ReservationForm = () => {
     const [reservationId, setReservationId] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const fetchSeats = async () => {
@@ -144,6 +146,19 @@ const ReservationForm = () => {
     };
 
     const handleReservation = async () => {
+        const token = getAuthToken();
+        if (!token) {
+            // Redirect to login with reservation details
+            navigate('/login', {
+                state: {
+                    from: location.pathname, // Current reservation page
+                    movieScheduleId: id,
+                    selectedSeats,
+                },
+            });
+            return;
+        }
+
         try {
             // Blokuj miejsca
             await axiosInstance.post(`/api/movies/${id}/seats/block`, null, {

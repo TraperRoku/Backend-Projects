@@ -3,6 +3,7 @@ package com.TraperRoku.entity;
 import com.TraperRoku.enums.SeatCategory;
 import com.TraperRoku.enums.SeatStatus;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,9 +23,8 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
-    @JoinColumn(name = "movie_schedule_id",nullable = false)
+    @JoinColumn(name = "movie_schedule_id", nullable = false)
     private MovieSchedule movieSchedule;
 
     @Column(name = "row_num")
@@ -34,17 +35,17 @@ public class Seat {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SeatStatus status;
+    private SeatStatus status = SeatStatus.AVAILABLE; // Default status
 
     @Column(nullable = false)
     private Double price;
 
     @Enumerated(EnumType.STRING)
-
     private SeatCategory category;
 
     @Column(name = "locked_until")
     private LocalDateTime lockedUntil;
+
 
     public double getPrice() {
         if (category == null) {
@@ -60,4 +61,6 @@ public class Seat {
                 return 20.00;
         }
     }
+
+
 }

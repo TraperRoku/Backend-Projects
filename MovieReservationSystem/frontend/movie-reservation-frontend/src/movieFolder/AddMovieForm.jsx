@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import {request} from '../axios_helper';
 import { useNavigate } from 'react-router-dom';
 import { getUserRole } from '../auth';
 import { Plus, X } from 'lucide-react';
@@ -14,10 +14,11 @@ const AddMovieForm = () => {
         posterUrl: '',
         startDate: '', 
         endDate: '',
-        showTime: ''
+        showTimes: [] 
     });
 
     const [newGenre, setNewGenre] = useState('');
+    const [newShowTime, setNewShowTime] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const [userRole, setUserRole] = useState(null);
@@ -49,12 +50,35 @@ const AddMovieForm = () => {
         }));
     };
 
+    const handleAddShowTime = (e) => {
+        e.preventDefault();
+        if (newShowTime.trim()) {
+            setFormData(prev => ({
+                ...prev,
+                showTimes: [...prev.showTimes, newShowTime.trim()]
+            }));
+            setNewShowTime('');
+        }
+    };
+
+    const handleRemoveShowTime = (indexToRemove) => {
+        setFormData(prev => ({
+            ...prev,
+            showTimes: prev.showTimes.filter((_, index) => index !== indexToRemove)
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         if (formData.genre.length === 0) {
             setError('Please add at least one genre');
+            return;
+        }
+
+        if (formData.showTimes.length === 0) {
+            setError('Please add at least one show time');
             return;
         }
 
@@ -65,14 +89,9 @@ const AddMovieForm = () => {
                 return;
             }
 
-            await axios.post('http://localhost:8080/api/movies', formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                }
-            });
+            await request('POST', '/api/movies', formData);
 
-            navigate('/movies');
+            navigate('/');
         } catch (err) {
             console.error("Error adding movie:", err.response?.data || err.message);
             setError(err.response?.data?.message || 'Failed to add movie');
@@ -196,13 +215,41 @@ const AddMovieForm = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Show Time::</label>
-                    <input 
-                        type="time" 
-                        value={formData.showTime} 
-                        onChange={(e) => setFormData({ ...formData, showTime: e.target.value })} 
-                        required 
-                    />
+                    <label>Show Times:</label>
+                    <div className="showtime-input-container">
+                        <input
+                            type="time"
+                            value={newShowTime}
+                            onChange={(e) => setNewShowTime(e.target.value)}
+                            placeholder="Enter a show time"
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleAddShowTime(e);
+                                }
+                            }}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAddShowTime}
+                            className="showtime-add-button"
+                        >
+                            <Plus size={20} />
+                        </button>
+                    </div>
+                    <div className="showtime-tags">
+                        {formData.showTimes.map((showTime, index) => (
+                            <span key={index} className="showtime-tag">
+                                {showTime}
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveShowTime(index)}
+                                    className="showtime-remove-button"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </span>
+                        ))}
+                    </div>
                 </div>
 
                 <button type="submit">
