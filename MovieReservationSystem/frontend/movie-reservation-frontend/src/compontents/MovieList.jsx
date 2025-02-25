@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Movie.css';
@@ -7,8 +7,13 @@ const BASE_URL = "http://localhost:8080";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
+  const [filteredMovies, setFilteredMovies] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date());
+  const [filters, setFilters] = useState({
+    title: "",
+    genre: ""
+  });
 
   const goToPreviousWeek = () => {
     const newWeekStart = new Date(currentWeekStart);
@@ -22,18 +27,49 @@ const MovieList = () => {
     setCurrentWeekStart(newWeekStart);
   };
 
+  // Using useCallback to memoize the filterMovies function
+  const filterMovies = useCallback(() => {
+    const filtered = movies.filter((movie) => {
+      const titleMatch = movie.title.toLowerCase().includes(filters.title.toLowerCase());
+      const genreMatch = filters.genre === "" || 
+        (movie.genre && movie.genre.some(g => 
+          g.toLowerCase().includes(filters.genre.toLowerCase())
+        ));
+      
+      return titleMatch && genreMatch;
+    });
+    
+    setFilteredMovies(filtered);
+  }, [filters, movies]);
+
+  // Fetch movies when the date changes
   useEffect(() => {
     const fetchMoviesByDate = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/movies/schedule?date=${selectedDate}`);
         console.log("Response data:", response.data); 
         setMovies(response.data);
+        setFilteredMovies(response.data); // Initialize filtered movies with all movies
       } catch (err) {
         console.error("Błąd podczas pobierania repertuaru", err);
       }
     };
     fetchMoviesByDate();
   }, [selectedDate]);
+
+  // Filter movies when filters or movies change
+  useEffect(() => {
+    filterMovies();
+  }, [filterMovies]); // Now correctly including filterMovies in the dependency array
+
+  // Handle filter input changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value
+    }));
+  };
 
   const generateWeekDays = () => {
     const days = [];
@@ -91,26 +127,61 @@ const MovieList = () => {
         })}
       </div>
 
+      {/* Search and filters section */}
+      <div className="search-filters">
+        <h2>🔍 Wyszukaj film</h2>
+        <div className="filter-inputs">
+          <div className="filter-group">
+            <label htmlFor="title">Tytuł:</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={filters.title}
+              onChange={handleFilterChange}
+              placeholder="Wpisz tytuł filmu..."
+            />
+          </div>
+          
+          <div className="filter-group">
+            <label htmlFor="genre">Gatunek:</label>
+            <input
+              type="text"
+              id="genre"
+              name="genre"
+              value={filters.genre}
+              onChange={handleFilterChange}
+              placeholder="Wpisz gatunek..."
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="movie-list">
-        {movies.length === 0 ? (
-          <p>Brak filmów na wybrany dzień</p>
+        {filteredMovies.length === 0 ? (
+          <p>Brak filmów spełniających kryteria wyszukiwania na wybrany dzień</p>
         ) : (
-          movies.map((movie) => (
+          filteredMovies.map((movie) => (
             <div key={movie.id} className="movie-card">
               <img src={movie.posterUrl} alt={movie.title} />
               <h2>
-              <Link
-  to={`/movie/${movie.id}`}
-  state={{ selectedDate }} // Pass the selected date
->
-  {movie.title}
-</Link>
+                <Link
+                  to={`/movie/${movie.id}`}
+                  state={{ selectedDate }}
+                >
+                  {movie.title}
+                </Link>
               </h2>
+              {movie.genre && movie.genre.length > 0 && (
+                <div className="movie-genres">
+                  <strong>Gatunki:</strong> {movie.genre.join(", ")}
+                </div>
+              )}
               <p>{movie.description}</p>
               <h3>🎥 Seanse:</h3>
               {movie.schedules && movie.schedules.length > 0 ? (
                 movie.schedules
-                  .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime)) // Filter showtimes by selected date
+                  .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime))
                   .map((schedule) => (
                     <div key={schedule.id}>
                       <p>
