@@ -30,6 +30,10 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDateTime issuedAt;
 
+    @Column(nullable = false)
+    private String titleMovie;
+
+
     public Ticket(Reservation reservation) {
         this.ticketNumber = UUID.randomUUID().toString();
         this.reservation = reservation;

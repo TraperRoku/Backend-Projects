@@ -1,0 +1,75 @@
+/* Tickets.css */
+
+.ticket-list {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .ticket-list h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #ea0d0d;
+    margin-bottom: 20px;
+  }
+  
+  .ticket-list p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  .ticket-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .ticket-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .ticket-card h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .ticket-card p {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  .ticket-card p:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Responsywność */
+  @media (max-width: 768px) {
+    .ticket-list {
+      padding: 10px;
+    }
+  
+    .ticket-list h1 {
+      font-size: 2rem;
+     
+    }
+  
+    .ticket-card {
+      padding: 15px;
+    }
+  
+    .ticket-card h2 {
+      font-size: 1.5rem;
+    }
+  
+    .ticket-card p {
+      font-size: 1rem;
+    }
+  }

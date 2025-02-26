@@ -9,8 +9,12 @@ const Header = ({ isLoggedIn, userRole, onLogout }) => {
       <Link to="/" className="text-xl font-bold">🎬 MovieApp</Link>
       <nav className="space-x-4">
         <Link to="/">Repertuar</Link>
+        {isLoggedIn  && (
+        <Link to="/tickets">Moje bilety</Link>
+        )
+      }
        
-        {isLoggedIn && userRole === "ADMIN" && (  // Tylko dla ADMINA
+        {isLoggedIn && userRole === "ADMIN" && (  
           <Link to="/add-movie" className="bg-green-500 px-3 py-1 rounded">Add Movie</Link>
         )}
         {isLoggedIn ? (

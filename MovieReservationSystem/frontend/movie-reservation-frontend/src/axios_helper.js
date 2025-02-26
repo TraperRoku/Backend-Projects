@@ -1,8 +1,24 @@
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode';
 
 // Constants
 const AUTH_TOKEN_KEY = 'auth_token';
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+
+
+export const getUserIdFromToken = () => {
+    const token = getAuthToken();
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            return decoded.userId; 
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    }
+    return null;
+};
 
 // Axios instance configuration
 const axiosInstance = axios.create({

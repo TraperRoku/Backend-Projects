@@ -9,6 +9,30 @@ const Ticket = () => {
   const navigate = useNavigate();
   const reservationId = location.state?.reservationId;
 
+  // Funkcja formatująca datę i godzinę
+  const formatDateTime = (showTime) => {
+    let date;
+    if (Array.isArray(showTime) && showTime.length === 5) {
+      const [year, month, day, hour, minute] = showTime;
+      date = new Date(year, month - 1, day, hour, minute);
+    } else {
+      date = new Date(showTime);
+    }
+
+    // Formatowanie daty i godziny
+    const formattedDate = date.toLocaleDateString('pl-PL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const formattedTime = date.toLocaleTimeString('pl-PL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   useEffect(() => {
     const fetchTicket = async () => {
       try {
@@ -26,14 +50,6 @@ const Ticket = () => {
     }
   }, [reservationId, navigate]);
 
-  const formatDateTime = (showTime) => {
-    if (Array.isArray(showTime) && showTime.length === 5) {
-      const [year, month, day, hour, minute] = showTime;
-      return new Date(year, month - 1, day, hour, minute);
-    }
-    return new Date(showTime);
-  };
-
   if (!ticket) return <div className="loading">🔄 Ładowanie biletu...</div>;
 
   return (
@@ -45,12 +61,12 @@ const Ticket = () => {
         
         <div className="ticket-details">
           <div className="detail-item">
-            <span className="detail-label">📅 Data:</span>
-            <span className="detail-value">{formatDateTime(ticket.showTime).toLocaleDateString()}</span>
+            <span className="detail-label">🎬 Tytuł:</span>
+            <span className="detail-value">{ticket.titleMovie}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">⏰ Godzina:</span>
-            <span className="detail-value">{formatDateTime(ticket.showTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            <span className="detail-label">📅 Data i godzina:</span>
+            <span className="detail-value">{formatDateTime(ticket.showTime)}</span>
           </div>
           <div className="detail-item">
             <span className="detail-label">💺 Miejsca:</span>

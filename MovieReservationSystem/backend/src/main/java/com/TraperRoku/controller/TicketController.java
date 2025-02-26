@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
@@ -24,4 +26,10 @@ public class TicketController {
     public Ticket getTicketByReservation(@PathVariable Long reservationId) {
         return  ticketService.getTicketByReservationId(reservationId);
     }
+
+    @GetMapping("/user/{userId}")
+    public List<Ticket> getTicketByUser(@PathVariable Long userId) {
+        return  ticketService.getTicketByUser(userId);
+    }
+
 }
