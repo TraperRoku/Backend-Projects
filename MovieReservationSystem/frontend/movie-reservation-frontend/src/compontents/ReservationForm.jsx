@@ -49,13 +49,18 @@ const PaymentForm = ({ reservationId, selectedSeats, id }) => {
                     }
                 });
             } else {
-                // Potwierdź rezerwację po pomyślnej płatności
-                await axiosInstance.post(`/api/reservation/confirm/${reservationId}`, {
+                await axiosInstance.post(`/api/payments/confirm/${reservationId}`, {
+                    status: "SUCCESS",
                     paymentIntentId: result.paymentIntent.id
                 });
                 
                 alert("Płatność zakończona sukcesem!");
-                navigate("/");
+                navigate('/ticket', {
+                    state: {
+                      reservationId: reservationId,
+                      paymentId: result.paymentIntent.id
+                    }
+                  });
             }
         } catch (err) {
             if (err.response?.status === 401) {

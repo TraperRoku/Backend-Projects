@@ -14,8 +14,8 @@ const axiosInstance = axios.create({
 });
 
 /**
- * Get the authentication token from local storage
- * @returns {string|null} The authentication token or null if not found
+ *
+ * @returns {string|null} 
  */
 export const getAuthToken = () => {
     try {
@@ -28,8 +28,8 @@ export const getAuthToken = () => {
 };
 
 /**
- * Set or remove the authentication token
- * @param {string|null} token - The token to set, or null to remove
+ * 
+ * @param {string|null} token 
  */
 export const setAuthHeader = (token) => {
     try {
@@ -45,9 +45,7 @@ export const setAuthHeader = (token) => {
     }
 };
 
-/**
- * Initialize axios with stored auth token if it exists
- */
+
 const initializeAxios = () => {
     const token = getAuthToken();
     if (token) {
@@ -55,16 +53,16 @@ const initializeAxios = () => {
     }
 };
 
-// Set up response interceptor for handling common errors
+
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
         if (error.response) {
-            // Handle specific HTTP errors
+          
             switch (error.response.status) {
                 case 401:
-                    setAuthHeader(null); // Clear invalid token
-                    // You might want to redirect to login page here
+                    setAuthHeader(null); 
+                
                     break;
                 case 403:
                     console.error('Access forbidden');
@@ -85,12 +83,12 @@ axiosInstance.interceptors.response.use(
 );
 
 /**
- * Make an HTTP request
- * @param {string} method - The HTTP method to use
- * @param {string} url - The URL to send the request to
- * @param {Object} [data] - The data to send with the request
- * @param {Object} [customConfig] - Additional axios configuration
- * @returns {Promise} The axios response promise
+ * 
+ * @param {string} method 
+ * @param {string} url 
+ * @param {Object} [data] 
+ * @param {Object} [customConfig] 
+ * @returns {Promise} 
  */
 export const request = (method, url, data = null, customConfig = {}) => {
     const config = {
@@ -110,8 +108,7 @@ export const request = (method, url, data = null, customConfig = {}) => {
     return axiosInstance(config);
 };
 
-// Initialize axios with any stored auth token
+
 initializeAxios();
 
-// Export the axios instance for direct use if needed
 export default axiosInstance;

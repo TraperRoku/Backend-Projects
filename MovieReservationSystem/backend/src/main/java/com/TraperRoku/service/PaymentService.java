@@ -4,6 +4,7 @@ import com.TraperRoku.dto.PaymentConfirmationDto;
 import com.TraperRoku.dto.PaymentRequestDto;
 import com.TraperRoku.entity.Payment;
 import com.TraperRoku.entity.Reservation;
+import com.TraperRoku.entity.Ticket;
 import com.TraperRoku.enums.PaymentStatus;
 import com.TraperRoku.repository.PaymentRepository;
 import com.stripe.Stripe;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 public class PaymentService {
     private final ReservationService reservationService;
     private final PaymentRepository paymentRepository;
+    private final TicketService ticketService;
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
@@ -53,8 +55,15 @@ public class PaymentService {
         payment.setAmount(reservation.getTotalPrice());
         payment.setPaymentDate(LocalDateTime.now());
         payment.setPaymentStatus(PaymentStatus.valueOf(confirmation.getStatus().toUpperCase()));
-        // payment.setPaymentStatus(PaymentStatus.SUCCESS);
+        Payment savedPayment = paymentRepository.save(payment);
+        Ticket ticket = ticketService.generateTicket(reservation);
 
-        return paymentRepository.save(payment);
+
+        System.out.println("🟢 Płatność zapisana w bazie!");
+
+        System.out.println("🎟️ Wygenerowano bilet: " + ticket.getTicketNumber());
+
+
+        return savedPayment;
     }
 }

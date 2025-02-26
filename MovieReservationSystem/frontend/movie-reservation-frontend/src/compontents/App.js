@@ -11,6 +11,8 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import AddMovieForm from "../movieFolder/AddMovieForm"; 
 import './global.css';
+import Ticket from "./Ticket";
+import Tickets from "../pages/Tickets";
 
 
 
@@ -44,6 +46,8 @@ const App = () => {
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterForm onRegister={handleLogin} />} />
         <Route path="/add-movie" element={<AddMovieForm />} />  
+        <Route path="/ticket" element={<Ticket />} />
+        <Route path="/tickets" element={<Tickets />} />
    
       </Routes>
       <Footer />
