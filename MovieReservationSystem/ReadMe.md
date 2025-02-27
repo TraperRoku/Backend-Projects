@@ -20,6 +20,24 @@ My Tickets
 
 Find Movie
 ![image](https://github.com/user-attachments/assets/b507892b-4d8a-4ef2-b12c-3d5260ea7a3b)
+DataBase
+Seat
+![image](https://github.com/user-attachments/assets/6f2177f1-973d-4d45-acb3-362c4e6e3b61)
+
+Reservation
+![image](https://github.com/user-attachments/assets/44ff397f-6bfe-489b-a9cb-67f247167e81)
+Payment
+![image](https://github.com/user-attachments/assets/4b420321-0da2-4d64-b1d6-34643d831592)
+Ticket
+![image](https://github.com/user-attachments/assets/d5f15042-f798-451d-8fce-37e86cb87749)
+Movie
+![image](https://github.com/user-attachments/assets/b7e90d7a-1c15-4d89-ba3c-f975b6484c66)
+MovieSchedule
+![image](https://github.com/user-attachments/assets/a725d140-5a1b-402f-a6fd-997e85428732)
+User
+![image](https://github.com/user-attachments/assets/818bc3c7-07f2-4168-8860-0083b09d639a)
+
+
 
 
 
