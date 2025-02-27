@@ -7,7 +7,8 @@ Login User
 ![image](https://github.com/user-attachments/assets/01a3a0a3-283f-485f-bbd0-f89a21fa3331)
 
 Reserve ticket and choose Showtime
-![image](https://github.com/user-attachments/assets/f07b2a85-5f96-40a0-80d8-1d765f628458)
+![image](https://github.com/user-attachments/assets/ec350b9d-cb3d-4ac9-849c-2426401ef7c2)
+
 ![image](https://github.com/user-attachments/assets/1ee4cc4e-84b5-4781-8f8a-22ce4aa7cfc6)
 ![image](https://github.com/user-attachments/assets/b1b216d8-d847-41f5-9108-1cd0d9f9e7b3)
 ![image](https://github.com/user-attachments/assets/4523bc0f-df82-4365-910e-57c4903460b0)
