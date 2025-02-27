@@ -1,13 +1,13 @@
 
 
 header {
-    background-color: #2563eb; /* bg-blue-600 */
+    background-color: #2563eb; 
     color: white;
-    padding: 1rem; /* p-4 */
+    padding: 1rem;
   }
   
   nav {
-    max-width: 1200px; /* container mx-auto */
+    max-width: 1200px; 
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -17,11 +17,11 @@ header {
   nav a {
     color: white;
     text-decoration: none;
-    margin: 0 1rem; /* space-x-4 */
+    margin: 0 1rem; 
   }
   
   nav a:hover {
-    color: #bfdbfe; /* hover:text-blue-200 */
+    color: #bfdbfe; 
   }
   
   nav a,

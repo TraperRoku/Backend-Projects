@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 
-// Constants
 const AUTH_TOKEN_KEY = 'auth_token';
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
@@ -20,10 +19,10 @@ export const getUserIdFromToken = () => {
     return null;
 };
 
-// Axios instance configuration
+
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
-    timeout: 10000, // 10 seconds timeout
+    timeout: 10000, 
     headers: {
         'Content-Type': 'application/json'
     }

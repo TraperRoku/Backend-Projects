@@ -27,7 +27,7 @@ const MovieList = () => {
     setCurrentWeekStart(newWeekStart);
   };
 
-  // Using useCallback to memoize the filterMovies function
+
   const filterMovies = useCallback(() => {
     const filtered = movies.filter((movie) => {
       const titleMatch = movie.title.toLowerCase().includes(filters.title.toLowerCase());
@@ -42,14 +42,14 @@ const MovieList = () => {
     setFilteredMovies(filtered);
   }, [filters, movies]);
 
-  // Fetch movies when the date changes
+
   useEffect(() => {
     const fetchMoviesByDate = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/movies/schedule?date=${selectedDate}`);
         console.log("Response data:", response.data); 
         setMovies(response.data);
-        setFilteredMovies(response.data); // Initialize filtered movies with all movies
+        setFilteredMovies(response.data); 
       } catch (err) {
         console.error("Błąd podczas pobierania repertuaru", err);
       }
@@ -57,12 +57,12 @@ const MovieList = () => {
     fetchMoviesByDate();
   }, [selectedDate]);
 
-  // Filter movies when filters or movies change
+  
   useEffect(() => {
     filterMovies();
-  }, [filterMovies]); // Now correctly including filterMovies in the dependency array
+  }, [filterMovies]); 
 
-  // Handle filter input changes
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -89,10 +89,10 @@ const MovieList = () => {
       const [, , , hour, minute] = showTime;
       return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
     }
-    return showTime; // Fallback
+    return showTime; 
   };
 
-  // Helper function to check if a showtime matches the selected date
+
   const isShowtimeOnSelectedDate = (showTime) => {
     if (!showTime || !Array.isArray(showTime) || showTime.length !== 5) return false;
     const [year, month, day] = showTime;
@@ -102,17 +102,17 @@ const MovieList = () => {
 
   return (
     <div className="movie-list-container">
-      <h1>📅 Wybierz dzień</h1>
+      <h1>📅Choose day</h1>
 
       <div className="week-navigation">
-        <button onClick={goToPreviousWeek}>Poprzedni tydzień</button>
-        <button onClick={goToNextWeek}>Następny tydzień</button>
+        <button onClick={goToPreviousWeek}>Last week</button>
+        <button onClick={goToNextWeek}>Next week</button>
       </div>
 
       <div className="date-picker">
         {generateWeekDays().map((date, index) => {
           const formattedDate = date.toISOString().split("T")[0];
-          const dayNames = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+          const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"];
           const dayName = dayNames[date.getDay()];
 
           return (
@@ -127,31 +127,31 @@ const MovieList = () => {
         })}
       </div>
 
-      {/* Search and filters section */}
+   
       <div className="search-filters">
-        <h2>🔍 Wyszukaj film</h2>
+        <h2>🔍 Find movie</h2>
         <div className="filter-inputs">
           <div className="filter-group">
-            <label htmlFor="title">Tytuł:</label>
+            <label htmlFor="title">Title:</label>
             <input
               type="text"
               id="title"
               name="title"
               value={filters.title}
               onChange={handleFilterChange}
-              placeholder="Wpisz tytuł filmu..."
+              placeholder="Write title..."
             />
           </div>
           
           <div className="filter-group">
-            <label htmlFor="genre">Gatunek:</label>
+            <label htmlFor="genre">Genre:</label>
             <input
               type="text"
               id="genre"
               name="genre"
               value={filters.genre}
               onChange={handleFilterChange}
-              placeholder="Wpisz gatunek..."
+              placeholder="Write genre..."
             />
           </div>
         </div>
@@ -159,7 +159,7 @@ const MovieList = () => {
 
       <div className="movie-list">
         {filteredMovies.length === 0 ? (
-          <p>Brak filmów spełniających kryteria wyszukiwania na wybrany dzień</p>
+          <p>Not found any Movie</p>
         ) : (
           filteredMovies.map((movie) => (
             <div key={movie.id} className="movie-card">
@@ -174,11 +174,11 @@ const MovieList = () => {
               </h2>
               {movie.genre && movie.genre.length > 0 && (
                 <div className="movie-genres">
-                  <strong>Gatunki:</strong> {movie.genre.join(", ")}
+                  <strong>Genre:</strong> {movie.genre.join(", ")}
                 </div>
               )}
               <p>{movie.description}</p>
-              <h3>🎥 Seanse:</h3>
+              <h3>🎥 ShowTime:</h3>
               {movie.schedules && movie.schedules.length > 0 ? (
                 movie.schedules
                   .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime))
@@ -187,13 +187,13 @@ const MovieList = () => {
                       <p>
                         ⏰ {formatShowTime(schedule.showTime)} -  
                         <Link to={`/reservation/${schedule.id}`} className="reserve-btn">
-                          Zarezerwuj
+                          Reserve
                         </Link>
                       </p>
                     </div>
                   ))
               ) : (
-                <p>❌ Brak dostępnych seansów</p>
+                <p>❌ Not found showtimes</p>
               )}
             </div>
           ))

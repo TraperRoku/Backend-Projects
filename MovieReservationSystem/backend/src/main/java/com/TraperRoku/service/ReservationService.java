@@ -33,36 +33,29 @@ public class ReservationService {
 
     @Transactional
     public Reservation createReservation(Long userId, Long movieScheduleId, List<Long> seatIds) {
-        // Sprawdź czy seans istnieje
+
         MovieSchedule schedule = movieScheduleRepository.findById(movieScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono seansu"));
 
-        // Sprawdź czy seans nie jest w przeszłości
         if (schedule.getShowTime().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Nie można zarezerwować miejsc na seans, który już się odbył");
         }
 
-        // Znajdź użytkownika
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika"));
 
-        // Znajdź miejsca dla tego konkretnego seansu
         List<Seat> seats = seatRepository.findAllByMovieScheduleIdAndIdIn(schedule.getId(), seatIds);
-
-        // Sprawdź czy wszystkie miejsca zostały znalezione
         if (seats.size() != seatIds.size()) {
             throw new IllegalArgumentException("Niektóre miejsca nie zostały znalezione dla tego seansu");
         }
 
 
-        // Ustaw status miejsc na PENDING
         seats.forEach(seat -> {
             seat.setStatus(SeatStatus.PENDING);
             seat.setLockedUntil(LocalDateTime.now().plusMinutes(10));
         });
         seatRepository.saveAll(seats);
 
-        // Utwórz rezerwację
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setReservationStatus(ReservationStatus.PENDING);
@@ -91,10 +84,8 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono rezerwacji"));
 
-        // Potwierdź rezerwację
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
 
-        // Zaktualizuj status miejsc tylko dla tego konkretnego seansu
         List<Seat> seats = reservation.getSeats();
         seats.forEach(seat -> {
             if (seat.getMovieSchedule().getId().equals(reservation.getMovieSchedule().getId())) {

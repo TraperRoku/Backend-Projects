@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class MovieScheduleService {
     private final MovieScheduleRepository movieScheduleRepository;
 
-    // Pobiera seanse dla wybranego dnia
     public List<MovieSchedule> getSchedulesByDate(LocalDate date) {
         return movieScheduleRepository.findByShowTimeBetween(
                 date.atStartOfDay(),
@@ -25,7 +24,6 @@ public class MovieScheduleService {
         );
     }
 
-    // Pobiera seanse dla danego filmu i dnia
     public List<MovieSchedule> getSchedulesByMovieAndDate(Long movieId, LocalDate date) {
         return movieScheduleRepository.findByMovieIdAndShowTimeBetween(
                 movieId,

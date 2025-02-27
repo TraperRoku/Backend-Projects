@@ -1,4 +1,4 @@
-/* Tickets.css */
+
 
 .ticket-list {
     max-width: 800px;
@@ -49,8 +49,7 @@
   .ticket-card p:last-child {
     margin-bottom: 0;
   }
-  
-  /* Responsywność */
+
   @media (max-width: 768px) {
     .ticket-list {
       padding: 10px;

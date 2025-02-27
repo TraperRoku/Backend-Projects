@@ -26,7 +26,6 @@ public class MovieScheduleController {
         return ResponseEntity.ok(movieScheduleService.getSchedulesByDate(localDate));
     }
 
-    // Nowy endpoint do pobierania seansów dla konkretnego filmu i dnia
     @GetMapping("/movie/{movieId}/date")
     public ResponseEntity<List<MovieSchedule>> getSchedulesForMovieByDate(
             @PathVariable Long movieId,

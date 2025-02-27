@@ -6,6 +6,7 @@ import com.TraperRoku.entity.Payment;
 import com.TraperRoku.entity.Reservation;
 import com.TraperRoku.entity.Ticket;
 import com.TraperRoku.enums.PaymentStatus;
+import com.TraperRoku.enums.ReservationStatus;
 import com.TraperRoku.repository.PaymentRepository;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -24,6 +25,7 @@ public class PaymentService {
     private final ReservationService reservationService;
     private final PaymentRepository paymentRepository;
     private final TicketService ticketService;
+    private final SeatService seatService;
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
@@ -49,6 +51,8 @@ public class PaymentService {
     @Transactional
     public Payment confirmPayment(Long reservationId, PaymentConfirmationDto confirmation) {
         Reservation reservation = reservationService.getReservationById(reservationId);
+        reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+
 
         Payment payment = new Payment();
         payment.setReservation(reservation);
@@ -57,6 +61,7 @@ public class PaymentService {
         payment.setPaymentStatus(PaymentStatus.valueOf(confirmation.getStatus().toUpperCase()));
         Payment savedPayment = paymentRepository.save(payment);
         Ticket ticket = ticketService.generateTicket(reservation);
+        seatService.reserveSeats(reservation.getSeats());
 
 
         System.out.println("🟢 Płatność zapisana w bazie!");

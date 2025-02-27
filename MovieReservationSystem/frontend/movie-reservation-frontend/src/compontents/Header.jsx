@@ -8,9 +8,9 @@ const Header = ({ isLoggedIn, userRole, onLogout }) => {
     <header className="p-4 bg-gray-800 text-white flex justify-between">
       <Link to="/" className="text-xl font-bold">🎬 MovieApp</Link>
       <nav className="space-x-4">
-        <Link to="/">Repertuar</Link>
+        <Link to="/">MOVIES</Link>
         {isLoggedIn  && (
-        <Link to="/tickets">Moje bilety</Link>
+        <Link to="/tickets">My tickets</Link>
         )
       }
        

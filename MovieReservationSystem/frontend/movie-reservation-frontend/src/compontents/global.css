@@ -1,4 +1,4 @@
-/* Nowe czcionki - dodaj import w głównym pliku JS/HTML */
+
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;700&display=swap');
 
 :root {
@@ -9,7 +9,7 @@
   --text-light: #FFFFFF;
 }
 
-/* Globalne style */
+
 body {
   font-family: 'Roboto', sans-serif;
   background: var(--primary-color);
@@ -19,7 +19,7 @@ body {
   flex-direction: column;
 }
 
-/* Header - styl kinowy */
+
 header {
   background: linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(0,0,0,1) 100%);
   padding: 1rem;
@@ -165,7 +165,6 @@ button[type="submit"]:hover {
   letter-spacing: 3px;
 }
 
-/* Dodatkowe efekty specjalne */
 @keyframes flicker {
   0% { opacity: 1; }
   50% { opacity: 0.8; }
@@ -190,7 +189,6 @@ header::before {
   animation: flicker 0.15s infinite;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
   nav {
     flex-direction: column;

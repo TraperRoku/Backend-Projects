@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { getUserRole } from "../auth"; // 🟢 Importujemy poprawnie
+import { getUserRole } from "../auth"; 
 import Home from "../pages/Home";
 import Movie from "../pages/Movie";
 import Reservation from "../pages/Reservation";
@@ -21,13 +21,13 @@ const App = () => {
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
-    setUserRole(getUserRole()); // 🟢 Pobieramy rolę użytkownika po zalogowaniu
+    setUserRole(getUserRole()); 
   }, [isLoggedIn]); 
 
   const handleLogin = (token) => {
     setAuthHeader(token);
     setIsLoggedIn(true);
-    setUserRole(getUserRole()); // 🟢 Aktualizujemy rolę po logowaniu
+    setUserRole(getUserRole()); 
   };
 
   const handleLogout = () => {

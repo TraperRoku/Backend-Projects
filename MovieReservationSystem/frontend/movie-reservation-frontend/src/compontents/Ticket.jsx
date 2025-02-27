@@ -9,7 +9,6 @@ const Ticket = () => {
   const navigate = useNavigate();
   const reservationId = location.state?.reservationId;
 
-  // Funkcja formatująca datę i godzinę
   const formatDateTime = (showTime) => {
     let date;
     if (Array.isArray(showTime) && showTime.length === 5) {
@@ -19,7 +18,6 @@ const Ticket = () => {
       date = new Date(showTime);
     }
 
-    // Formatowanie daty i godziny
     const formattedDate = date.toLocaleDateString('pl-PL', {
       day: '2-digit',
       month: '2-digit',
@@ -50,36 +48,36 @@ const Ticket = () => {
     }
   }, [reservationId, navigate]);
 
-  if (!ticket) return <div className="loading">🔄 Ładowanie biletu...</div>;
+  if (!ticket) return <div className="loading">🔄 Loading ticket...</div>;
 
   return (
     <div className="ticket-container">
       <div className="ticket-card">
         <div className="ticket-header">
-          <h2>🎟️ Bilet #{ticket.ticketNumber}</h2>
+          <h2>🎟️ Ticket #{ticket.ticketNumber}</h2>
         </div>
         
         <div className="ticket-details">
           <div className="detail-item">
-            <span className="detail-label">🎬 Tytuł:</span>
+            <span className="detail-label">🎬 Title:</span>
             <span className="detail-value">{ticket.titleMovie}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">📅 Data i godzina:</span>
+            <span className="detail-label">📅 Date and time:</span>
             <span className="detail-value">{formatDateTime(ticket.showTime)}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">💺 Miejsca:</span>
+            <span className="detail-label">💺 Seat:</span>
             <span className="detail-value">{Array.isArray(ticket.seatNumbers) ? ticket.seatNumbers.join(", ") : ticket.seatNumbers}</span>
           </div>
           <div className="detail-item">
-            <span className="detail-label">🎫 Numer biletu:</span>
+            <span className="detail-label">🎫 Number ticket:</span>
             <span className="detail-value">{ticket.ticketNumber}</span>
           </div>
         </div>
         
         <div className="ticket-footer">
-          <p>🔔 Proszę okazać bilet przy wejściu do kina</p>
+          <p>🔔 Please show your ticket before eneter</p>
         </div>
       </div>
     </div>

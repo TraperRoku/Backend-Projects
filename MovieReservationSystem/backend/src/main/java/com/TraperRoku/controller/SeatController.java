@@ -21,11 +21,11 @@ public class SeatController {
         return ResponseEntity.ok(seats);
     }
 
-    @PostMapping("/{seatId}/reserve")
+  /*  @PostMapping("/{seatId}/reserve")
     public ResponseEntity<Seat> reserveSeat(@PathVariable Long seatId) {
         Seat reservedSeat = seatService.reserveSeat(seatId);
         return ResponseEntity.ok(reservedSeat);
-    }
+    }*/
 
     @PostMapping("/{seatId}/cancel")
     public ResponseEntity<Seat> cancelReservation(@PathVariable Long seatId) {
@@ -35,7 +35,7 @@ public class SeatController {
 
     @PostMapping("/unblock")
     public ResponseEntity<String> unblockSeats(
-            @PathVariable Long movieScheduleId, // Użyj @PathVariable zamiast @RequestParam
+            @PathVariable Long movieScheduleId,
             @RequestParam List<Long> seatIds
     ) {
         seatService.unblockSeats(movieScheduleId, seatIds);

@@ -12,7 +12,6 @@
 
 
 
-/* Nagłówek z tytułem i plakatem */
 .movie-header {
   display: flex;
   flex-direction: column;
@@ -23,12 +22,11 @@
 .movie-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 2.5rem;
-  color: #FFD700; /* Złoty */
+  color: #FFD700; 
   letter-spacing: 2px;
   text-shadow: 2px 2px 4px rgba(255, 215, 0, 0.5);
 }
 
-/* Plakat filmu */
 .movie-poster {
   max-width: 300px;
   border-radius: 8px;
@@ -36,14 +34,13 @@
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Opis i metadane */
 .movie-info {
   margin-top: 20px;
 }
 
 .movie-description h2 {
   font-size: 1.8rem;
-  color: #E50914; /* Netflix Red */
+  color: #E50914;
 }
 
 .movie-description p {
@@ -51,7 +48,7 @@
   color: #ccc;
 }
 
-/* Dodatkowe informacje */
+
 .movie-metadata {
   margin-top: 20px;
   font-size: 1.1rem;
@@ -153,7 +150,6 @@
 }
 
 
-/* Przycisk rezerwacji */
 .reserve-button {
   margin-top: 20px;
   padding: 12px 20px;
@@ -171,8 +167,6 @@
   background-color: #b20710;
   transform: scale(1.05);
 }
-
-/* Main container */
 .movie-list-container {
   max-width: 1200px;
   margin: 20px auto;
@@ -233,7 +227,7 @@
   transform: scale(1.05);
 }
 
-/* Movie list */
+
 .movie-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -241,7 +235,6 @@
   padding: 20px;
 }
 
-/* Movie card */
 .movie-card {
   background: #2a2a2a;
   border-radius: 10px;
@@ -264,7 +257,7 @@
 .movie-card h2 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.5rem;
-  color: #FFD700; /* Gold */
+  color: #FFD700; 
   margin: 10px 0;
   letter-spacing: 1px;
 }
@@ -277,11 +270,10 @@
 
 .movie-card p:last-child {
   font-size: 1.1rem;
-  color: #E50914; /* Netflix Red */
+  color: #E50914; 
   font-weight: bold;
 }
 
-/* Responsiveness */
 @media (max-width: 768px) {
   .movie-list {
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -297,7 +289,7 @@
 }
 
 
-/* Responsywność */
+
 @media (max-width: 768px) {
   .movie-title {
       font-size: 2rem;
@@ -343,12 +335,12 @@
   color: #ccc;
 }
 
-/* Reserve button */
+
 .reserve-btn {
   padding: 8px 16px;
   font-size: 1rem;
   font-family: 'Bebas Neue', sans-serif;
-  background-color: #E50914; /* Netflix Red */
+  background-color: #E50914; 
   color: white;
   border: none;
   border-radius: 5px;
@@ -362,7 +354,6 @@
   transform: scale(1.05);
 }
 
-/* Ogólne style dla kontenera wyszukiwarki */
 .search-filters {
   margin: 20px 0;
   padding: 20px;
@@ -372,7 +363,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Nagłówek wyszukiwarki */
+
 .search-filters h2 {
   color: #fff;
   margin-top: 0;
@@ -382,7 +373,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Kontener dla inputów */
+
 .filter-inputs {
   display: flex;
   flex-wrap: wrap;
@@ -390,13 +381,13 @@
   justify-content: center;
 }
 
-/* Grupa dla każdego filtra */
+
 .filter-group {
   flex: 1;
   min-width: 250px;
 }
 
-/* Etykiety */
+
 .filter-group label {
   display: block;
   margin-bottom: 8px;
@@ -405,7 +396,7 @@
   font-size: 16px;
 }
 
-/* Inputy */
+
 .filter-group input {
   width: 100%;
   padding: 15px 15px;
@@ -427,7 +418,7 @@
   color: #666;
 }
 
-/* Styl dla nagłówka "Wyszukaj film" z ikoną */
+
 .search-filters h2 {
   display: flex;
   align-items: center;
@@ -440,7 +431,7 @@
   font-size: 24px;
 }
 
-/* Style dla wyświetlania gatunków */
+
 .movie-genres {
   background-color: #2a2a2a;
   padding: 5px 10px;
@@ -454,7 +445,6 @@
   color: #ff0000;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
   .filter-inputs {
     flex-direction: column;

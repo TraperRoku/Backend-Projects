@@ -30,7 +30,7 @@ const PaymentForm = ({ reservationId, selectedSeats, id }) => {
         setError(null);
 
         try {
-            // Utwórz intencję płatności
+
             const response = await axiosInstance.post('/api/payments/create-intent', {
                 reservationId
             });
@@ -42,7 +42,7 @@ const PaymentForm = ({ reservationId, selectedSeats, id }) => {
 
             if (result.error) {
                 setError(result.error.message);
-                // Odblokuj miejsca w przypadku błędu płatności
+                
                 await axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
                     params: {
                         seatIds: selectedSeats.join(",")
@@ -68,7 +68,7 @@ const PaymentForm = ({ reservationId, selectedSeats, id }) => {
                 navigate("/login");
             } else {
                 setError("Błąd podczas płatności. Spróbuj ponownie.");
-                // Odblokuj miejsca w przypadku błędu
+             
                 await axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
                     params: {
                         seatIds: selectedSeats.join(",")
@@ -102,7 +102,7 @@ const PaymentForm = ({ reservationId, selectedSeats, id }) => {
                 disabled={!stripe || processing}
                 className="payment-button"
             >
-                {processing ? "Przetwarzanie..." : "Zapłać"}
+                {processing ? "Processing..." : "Pay"}
             </button>
         </form>
     );
@@ -131,7 +131,7 @@ const ReservationForm = () => {
 
     useEffect(() => {
         return () => {
-            // Odblokuj miejsca, gdy komponent jest odmontowywany (użytkownik opuszcza stronę)
+         
             if (selectedSeats.length > 0 && !reservationId) {
                 axiosInstance.post(`/api/movies/${id}/seats/unblock`, null, {
                     params: {
@@ -153,10 +153,10 @@ const ReservationForm = () => {
     const handleReservation = async () => {
         const token = getAuthToken();
         if (!token) {
-            // Redirect to login with reservation details
+            
             navigate('/login', {
                 state: {
-                    from: location.pathname, // Current reservation page
+                    from: location.pathname, 
                     movieScheduleId: id,
                     selectedSeats,
                 },
@@ -165,14 +165,14 @@ const ReservationForm = () => {
         }
 
         try {
-            // Blokuj miejsca
+        
             await axiosInstance.post(`/api/movies/${id}/seats/block`, null, {
                 params: {
                     seatIds: selectedSeats.join(",")
                 }
             });
 
-            // Utwórz rezerwację
+    
             const params = new URLSearchParams();
             params.append("userId", getUserIdFromToken());
             params.append("movieScheduleId", id);
@@ -197,7 +197,7 @@ const ReservationForm = () => {
 
     return (
         <div className="reservation-page">
-            <h1>Rezerwacja miejsc</h1>
+            <h1>Reserve your seats</h1>
             {error && <p className="error-message">{error}</p>}
             <div className="seats-container">
                 {seats.map((seat) => (
@@ -217,7 +217,7 @@ const ReservationForm = () => {
                 className="reserve-button"
                 disabled={selectedSeats.length === 0}
             >
-                Zarezerwuj {selectedSeats.length > 0 ? `(${selectedSeats.length})` : ""}
+                Reserve {selectedSeats.length > 0 ? `(${selectedSeats.length})` : ""}
             </button>
 
             {reservationId && (

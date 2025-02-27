@@ -13,16 +13,15 @@ const LoginForm = ({ onLogin }) => {
     e.preventDefault();
     try {
       const response = await request("POST", "/login", formData);
-      onLogin(response.data.token, response.data.user); // Call the onLogin callback
+      onLogin(response.data.token, response.data.user); 
 
-      // Redirect back to the reservation page with preserved state
       const { from, movieScheduleId, selectedSeats } = location.state || {};
       if (from && movieScheduleId && selectedSeats) {
         navigate(from, {
           state: { movieScheduleId, selectedSeats },
         });
       } else {
-        navigate("/"); // Default redirect if no reservation state is found
+        navigate("/"); 
       }
     } catch (error) {
       setError("Invalid credentials. Please try again.");

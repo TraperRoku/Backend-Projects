@@ -20,7 +20,7 @@ export const decodeJWT = (token) => {
     try {
         const payload = token.split('.')[1];
         const decodedPayload = JSON.parse(atob(payload));
-        return decodedPayload.userId; // Dokładnie ta sama nazwa jak w tokenie
+        return decodedPayload.userId; 
     } catch (error) {
         console.error('Error decoding token:', error);
         return null;

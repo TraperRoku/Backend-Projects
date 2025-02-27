@@ -42,17 +42,16 @@ public class MovieService {
     }
     @Transactional
     public List<Movie> createMovieWithScheduleAndSeats(Movie movie) {
-        // Ensure showTimes is not empty
+
         if (movie.getShowTimes() == null || movie.getShowTimes().isEmpty()) {
             throw new IllegalArgumentException("Show times must not be empty");
         }
 
         List<Movie> listMovie = new ArrayList<>();
 
-        // Save the movie
+
         Movie savedMovie = movieRepository.save(movie);
 
-        // Create schedules for the specified dates and showtimes
         List<MovieSchedule> schedules = new ArrayList<>();
         LocalDate startDate = movie.getStartDate();
         LocalDate endDate = movie.getEndDate();
@@ -61,7 +60,6 @@ public class MovieService {
             throw new IllegalArgumentException("Invalid movie dates");
         }
 
-        // Create a separate schedule for each day and each showtime
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             for (LocalTime showTime : movie.getShowTimes()) {
                 MovieSchedule schedule = new MovieSchedule();
@@ -72,7 +70,6 @@ public class MovieService {
         }
         List<MovieSchedule> savedSchedules = movieScheduleRepository.saveAll(schedules);
 
-        // Create seats for each schedule
         for (MovieSchedule schedule : savedSchedules) {
             List<Seat> seatsForSchedule = new ArrayList<>();
             for (int row = 1; row <= 5; row++) {

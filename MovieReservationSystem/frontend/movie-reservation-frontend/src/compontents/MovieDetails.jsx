@@ -47,7 +47,7 @@ const MovieDetails = () => {
 
   if (loading) return <div>Ładowanie...</div>;
   if (error) return <div className="error-message">{error}</div>;
-  if (!movie) return <div>Nie znaleziono filmu</div>;
+  if (!movie) return <div>Not found</div>;
 
   return (
     <div className="movie-details">
@@ -64,41 +64,41 @@ const MovieDetails = () => {
       
       <div className="movie-info">
         <div className="movie-description">
-          <h2>Opis</h2>
+          <h2>Description</h2>
           <p>{movie.description}</p>
         </div>
 
         <div className="movie-metadata">
           {movie.duration && (
             <div className="movie-duration">
-              <strong>Czas trwania:</strong> {movie.duration} min
+              <strong>Duration:</strong> {movie.duration} min
             </div>
           )}
           
           {movie.genre && movie.genre.length > 0 && (
             <div className="movie-genres">
-              <strong>Gatunki:</strong> {movie.genre.join(', ')}
+              <strong>Genre:</strong> {movie.genre.join(', ')}
             </div>
           )}
         </div>
 
         <div className="showtime-selection">
-          <h3>🎥 Seanse na dzień {selectedDate}:</h3>
+          <h3>🎥 Showtime for today  {selectedDate}:</h3>
           {movie.schedules && movie.schedules.length > 0 ? (
             movie.schedules
-              .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime)) // Filter showtimes by selected date
+              .filter((schedule) => isShowtimeOnSelectedDate(schedule.showTime)) 
               .map((schedule) => (
                 <div key={schedule.id} className="showtime-option">
                   <p>
                     ⏰ {formatShowTime(schedule.showTime)} -  
                     <Link to={`/reservation/${schedule.id}`} className="reserve-btn">
-                      Zarezerwuj
+                      Reserve
                     </Link>
                   </p>
                 </div>
               ))
           ) : (
-            <p>❌ Brak dostępnych seansów</p>
+            <p>❌ Not found</p>
           )}
         </div>
       </div>

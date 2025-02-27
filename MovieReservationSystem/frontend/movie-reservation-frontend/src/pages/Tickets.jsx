@@ -46,16 +46,16 @@ const Tickets = () => {
 
   return (
     <div className="ticket-list">
-      <h1>🎟 Moje Bilety</h1>
+      <h1>🎟 My Tickets</h1>
       {tickets.length === 0 ? (
-        <p>Brak biletów</p>
+        <p>Ticket not found</p>
       ) : (
         tickets.map((ticket) => (
           <div key={ticket.ticketNumber} className="ticket-card">
             <h2>{ticket.movieTitle}</h2>
-            <p>🎬 Seans: {formatDateTime(ticket.showTime)}</p>
-            <p>💺 Miejsca: {ticket.seatNumbers}</p>
-            <p>📄 Nr biletu: {ticket.ticketNumber}</p>
+            <p>🎬 Showtime: {formatDateTime(ticket.showTime)}</p>
+            <p>💺 Seat: {ticket.seatNumbers}</p>
+            <p>📄 Number Ticket: {ticket.ticketNumber}</p>
           </div>
         ))
       )}
