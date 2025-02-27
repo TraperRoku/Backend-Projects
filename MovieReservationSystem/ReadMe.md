@@ -1,12 +1,95 @@
-Adding the movie as  Admin
+# 🎬 Cinema Reservation System  
+
+## 🚀 About the Project  
+This project is a **Cinema Ticket Booking System**, allowing users to:  
+- Browse movies and showtimes  
+- Select and reserve seats  
+- Make payments using **Stripe**  
+- Generate and view tickets  
+- Manage movies (Admin Panel)  
+
+It provides a **full-stack web application** built with:  
+- **Frontend:** React.js  
+- **Backend:** Spring Boot  
+- **Database:** MySQL  
+- **Payments:** **Stripe API**  
+
+---
+
+## 🔥 Key Features  
+### 🎥 Movie Management  
+- ✅ **Admins** can add, update, and remove movies.  
+- ✅ Each movie has multiple showtimes.  
+
+### 🎟 Seat Reservation System  
+- ✅ Users can browse available seats for a selected showtime.  
+- ✅ Seat availability is updated in real-time.  
+- ✅ Reserved seats are locked for a period before payment.  
+
+### 💳 Secure Payments with Stripe  
+- ✅ Payments are handled using Stripe API.
+- ✅ After successful payment, the system generates a ticket.
+- ✅ If payment fails, the seat is released.
+
+### 🎫 Ticket System  
+- ✅ Users can view and manage their booked tickets.  
+
+### 👤 Authentication & Authorization  
+- ✅ **Users** can register and log in.  
+- ✅ **Admins** have special privileges to manage movies.  
+
+---
+### ⚙️ Backend  
+- Java + Spring Boot  
+- Spring Security (Authentication & JWT)  
+- MySQL (Database)  
+- Stripe API (for Payments)
+- 
+## 🛠 Tech Stack  
+### 💻 Frontend  
+- React.js  
+- Axios (for API requests)  
+
+### 🔗 API & Tools  
+- **RESTful API** for communication between frontend and backend  
+- **JWT Authentication** for user sessions  
+- **Axios** for handling HTTP requests  
+
+---
+
+## 🏆 Challenges & Solutions  
+
+### 1️⃣ Handling Seat Availability in Real-Time  
+**Problem:** Users could try to reserve the same seat at the same time.
+**Solution:** Added a seat locking system to avoid duplicate bookings.
+
+### 2️⃣ Payment & Ticket Generation with Stripe  
+**Problem:** Payments needed to be safe and well-integrated. 
+**Solution:** Used Stripe Payment Intents API to confirm payments before ticket creation.
+
+### 3️⃣ Preventing Expired Reservations  
+**Problem:** Users could block seats but not pay. 
+**Solution:**  Seats are automatically released if no payment is made within a time limit (10 min).
+---
+## 🎯 Why This Project is Impressive?  
+✅ **Real-world use case** – Simulates a cinema booking system.
+✅ **Secure payment integration** – Implemented **Stripe API** effectively.  
+✅ **Advanced backend handling** – Managing reservations, payments, and seat locks.  
+
+This project showcases my ability to work with **full-stack development**, integrate **secure payment systems**, and solve real-world problems in a structured and scalable way.  
+
+---
+
+## 📸 Screenshots  
+Adding a movie as an Admin
 ![image](https://github.com/user-attachments/assets/52b4881c-76d6-4864-b461-63ca6e0b276e)
 ![image](https://github.com/user-attachments/assets/0f9e6e35-0829-41ce-9450-f2e8ea7935d8)
-Register User
+Register a User
 ![image](https://github.com/user-attachments/assets/374e38a8-7b0e-43bd-bc4d-e3098cc89408)
-Login User
+Login Page
 ![image](https://github.com/user-attachments/assets/01a3a0a3-283f-485f-bbd0-f89a21fa3331)
 
-Reserve ticket and choose Showtime
+Reserving a Ticket
 ![image](https://github.com/user-attachments/assets/ec350b9d-cb3d-4ac9-849c-2426401ef7c2)
 
 ![image](https://github.com/user-attachments/assets/1ee4cc4e-84b5-4781-8f8a-22ce4aa7cfc6)
@@ -36,11 +119,6 @@ MovieSchedule
 ![image](https://github.com/user-attachments/assets/a725d140-5a1b-402f-a6fd-997e85428732)
 User
 ![image](https://github.com/user-attachments/assets/818bc3c7-07f2-4168-8860-0083b09d639a)
-
-
-
-
-
 
 
 
