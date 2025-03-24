@@ -17,13 +17,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Date;
-@RequiredArgsConstructor
+
 @Component
 public class UserAuthProvider {
 
     private static final String secretKey = "my_super_secure_secret_key_32_bytes_long";
 
     private final UserService userService;
+
+    public UserAuthProvider(UserService userService){
+        this.userService = userService;
+    }
 
     private Algorithm algorithm;
 

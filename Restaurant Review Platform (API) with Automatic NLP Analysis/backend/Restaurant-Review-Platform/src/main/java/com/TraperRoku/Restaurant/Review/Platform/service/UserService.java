@@ -6,10 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     public UserDto findByLogin(String login){
     return userRepository.findByLogin(login).orElseThrow(()-> new IllegalArgumentException("Not found user"));
