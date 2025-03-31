@@ -3,6 +3,7 @@ package com.TraperRoku.Restaurant.Review.Platform.config;
 
 
 import com.TraperRoku.Restaurant.Review.Platform.dto.UserDto;
+import com.TraperRoku.Restaurant.Review.Platform.entity.User;
 import com.TraperRoku.Restaurant.Review.Platform.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -50,7 +51,7 @@ public class UserAuthProvider {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decodedJWT = verifier.verify(token);
 
-        UserDto user = userService.findByLogin(decodedJWT.getIssuer());
+        User user = userService.findByLogin(decodedJWT.getIssuer());
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 }
