@@ -13,23 +13,22 @@ public class UserMapper {
         if (signUpDto == null) {
             return null;
         }
-
-        User user = new User();
-        user.setEmail(signUpDto.getEmail());
-        user.setLogin(signUpDto.getLogin());
-        user.setPassword(signUpDto.getPassword());
-        return user;
+        return User.builder()
+                .email(signUpDto.getEmail())
+                .login(signUpDto.getLogin())
+                .password(signUpDto.getPassword())
+                .build();
     }
 
     public UserDto toUserDto(User user){
         if(user == null){
             return null;
         }
-        UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setLogin(user.getLogin());
-        userDto.setToken(user.getLogin()); // LINIJKA Z TOKEN
 
-        return  userDto;
+        return UserDto.builder().id(user.getUserId().toString())
+                .email(user.getEmail())
+                .login(user.getLogin())
+                .token(user.getLogin())
+                .build();
     }
 }
