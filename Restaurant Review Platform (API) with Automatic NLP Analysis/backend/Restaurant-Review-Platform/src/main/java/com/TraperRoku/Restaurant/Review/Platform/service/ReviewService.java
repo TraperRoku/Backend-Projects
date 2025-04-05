@@ -1,5 +1,6 @@
 package com.TraperRoku.Restaurant.Review.Platform.service;
 
+import com.TraperRoku.Restaurant.Review.Platform.dto.ReviewDto;
 import com.TraperRoku.Restaurant.Review.Platform.entity.Review;
 import com.TraperRoku.Restaurant.Review.Platform.exception.AppException;
 import com.TraperRoku.Restaurant.Review.Platform.repository.ReviewRepository;
@@ -10,12 +11,17 @@ import java.util.List;
 
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final NlpService nlpService;
 
-    public ReviewService(ReviewRepository reviewRepository) {
+    public ReviewService(ReviewRepository reviewRepository, NlpService nlpService) {
         this.reviewRepository = reviewRepository;
+        this.nlpService = nlpService;
     }
 
-    public Review addReview(Review review) {
+    public Review addReview(ReviewDto reviewDto) {
+        Review review = new Review();
+        review.setText(reviewDto.getText());
+        review.setSentimentScore(nlpService.analyzeSentiment(reviewDto.getText()));
         return reviewRepository.save(review);
     }
 
