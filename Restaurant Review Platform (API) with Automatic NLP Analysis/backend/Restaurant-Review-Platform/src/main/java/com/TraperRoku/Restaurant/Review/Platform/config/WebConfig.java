@@ -45,7 +45,6 @@ public class WebConfig implements WebMvcConfigurer {
         bean.setOrder(CORS_FILTER_ORDER);
         return bean;
     }
-    //configuration class to serve static files:
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")

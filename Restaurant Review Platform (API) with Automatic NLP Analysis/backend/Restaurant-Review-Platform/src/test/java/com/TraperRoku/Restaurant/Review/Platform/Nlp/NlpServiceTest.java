@@ -4,7 +4,7 @@ import com.TraperRoku.Restaurant.Review.Platform.service.NlpService;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
+
 
 import java.util.Properties;
 
@@ -29,21 +29,21 @@ public class NlpServiceTest {
 
     @Test
     public void shouldDetectVeryPositiveSentiment() {
-        assertEquals(5, nlpService.analyzeSentiment("This restaurant is amazing!"));
+        assertEquals(4, nlpService.analyzeSentiment("This restaurant is amazing!"));
     }
 
     @Test
     public void shouldDetectPositiveSentiment() {
-        assertEquals(4, nlpService.analyzeSentiment("Good food"));
+        assertEquals(3, nlpService.analyzeSentiment("Good food"));
     }
 
     @Test
     public void shouldHandleEmptyText() {
-        assertEquals(3, nlpService.analyzeSentiment(""));
+        assertEquals(2, nlpService.analyzeSentiment(""));
     }
     @Test
     public void shouldDetectNegativeSentiment() {
-        assertEquals(2, nlpService.analyzeSentiment("Food was bad but it was cheap"));
+        assertEquals(1, nlpService.analyzeSentiment("Food was bad but it was cheap"));
     }
 
     @Test
@@ -52,8 +52,12 @@ public class NlpServiceTest {
                 + "Every bite made me want to vomit. It's a disgrace to food. "
                 + "Whoever made this should NEVER be allowed to cook again. "
                 + "I felt sick for days. Just shut this place down!";
-        assertEquals(1, nlpService.analyzeSentiment(extremeText1));
-        //NIE MA 1
+
+        int sentimentScore = nlpService.analyzeSentiment(extremeText1);
+
+        System.out.println("Sentiment detected: " + sentimentScore); // Sprawdź, co rzeczywiście zwraca
+
+        assertEquals(0, sentimentScore);
     }
 
 }

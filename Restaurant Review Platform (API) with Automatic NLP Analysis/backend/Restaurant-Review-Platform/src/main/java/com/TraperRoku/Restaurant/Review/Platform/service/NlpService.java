@@ -29,31 +29,31 @@ public class NlpService {
 
     public int analyzeSentiment(String text){
         if (text == null || text.trim().isEmpty()) {
-            return 3;
+            return 2;
         }
         Annotation annotation = new Annotation(text);
         pipeline.annotate(annotation);
 
-        int mainSentiment = 5;
-        int longest = 0;
+        int mainSentiment = 4;
+        System.out.println("Pipeline loaded: " + (pipeline != null));
+
+
 
         for(CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)){
             String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
-            int length = sentence.toString().length();
+            int sentimentScore = switch (sentiment) {
+                case "Very Negative" -> 0;
+                case "Negative" -> 1;
+                case "Neutral" -> 2;
+                case "Positive" -> 3;
+                case "Very Positive" -> 4;
+                default -> 2;
+            };
 
-            if(length > longest){
-                longest = length;
-                int sentimentScore  = switch (sentiment){
-                    case "Very negative" -> 1;
-                    case "Negative" -> 2;
-                    case "Neutral" -> 3;
-                    case "Positive" -> 4;
-                    case "Very positive" -> 5;
-                    default -> 3;
-                };
-                mainSentiment = Math.min(mainSentiment, sentimentScore);
-            }
+
+            mainSentiment = Math.min(mainSentiment, sentimentScore);
         }
+
         return mainSentiment;
     }
 
